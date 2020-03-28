@@ -1,0 +1,5 @@
+requests
+PIL
+praw
+asyncpg
+discord
