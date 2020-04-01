@@ -23,10 +23,33 @@ saying = ["Get your own money",
           "Get a job useless piece of shit",
           "Do I know you?",
           "I have a shoe?"
-]
+          ]
 
 richppl = ["Jeff Bezos",
            "Elon Musk",
            "Bill gates",
            "Mr. Beast"
-]
+           ]
+
+meme = ["but everyone actually hated it",
+        "but you used an outdated meme -_-",
+        "neat",
+        "why do you keep trying?",
+        "Begone insta normie"]
+
+tips = ["you can change the money name with %prefix%setmoney",
+        "you can steal cash from your best buddy's"
+        ]
+
+smart = ["big brain",
+         "Einstein",
+         "genius",
+         "smartass",
+         "smarty-pants"
+         ]
+
+dumb = ["smol brain",
+        "dumb dumb",
+        "ignoramus",
+        "bonehead"
+        ]

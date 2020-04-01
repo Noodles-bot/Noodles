@@ -2040,7 +2040,7 @@ fortunes = [
     '\nThere are things that are so serious that you can only joke about them.\n        ― Heisenberg\n',
     '\nThere are three kinds of lies: Lies, Damn Lies, and Statistics.\n        ― Disraeli\n',
     '\nThere are three ways to get something done: do it yourself, hire\nsomeone, or forbid your kids to do it.\n',
-    '\nThere are two novels that can change a bookish fourteen-year old\'s life:\n"The Lord of the Rings" and "Atlas Shrugged". One is a childish fantasy\nthat often engenders a lifelong obsession with its unbelievable heroes,\nleading to an emotionally stunted, socially crippled adulthood, unable to\ndeal with the real world. The other, of course, involves orcs.\n        ― John Rogers (kfmonkey.blogspot.com/2009/03/ephemera-2009-7.html)\n',
+    '\nThere are two novels that can change a bookish fourteen-year old\'s life:\n"The Lord of the Rings" and "Atlas Shrugged". One is a childish fantasy\nthat often engenders a lifelong obsession with its unbelievable heroes,\nleading to an emotionally stunted, socially crippled adulthood, unable to\ndeal with the real world. The other, of course, involves orcs.\n        ― John Rogers (kfmonkey.blogspot.com/2009/03/ephemera-2009-7.remote)\n',
     '\nThere are two ways of constructing a software design. One way is to make\nit so simple that there are obviously no deficiencies and the other is to\nmake it so complicated that there are no obvious deficiencies.\n        ― Charles Anthony Richard Hoare\n',
     '\nThere are two ways to write error-free programs. Only the third one works.\n',
     "\nThere are two ways to be fooled. One is to believe what isn't true. The other\nis to refuse to accept what is true.\n        ― Søren Kierkegaard\n",
