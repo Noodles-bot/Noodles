@@ -149,4 +149,4 @@ for cog in os.listdir(".\\cogs"):
             raise e
 
 bot.loop.run_until_complete(create_db_pool())
-bot.run('Njc1NTQyMDExNDU3MDQ0NTEy.Xj5Hgw.lfU6PZf77OYmubUXkZV-C3Fsxcg')
+bot.run(TOKEN)
