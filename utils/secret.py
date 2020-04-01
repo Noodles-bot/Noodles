@@ -1,5 +1,7 @@
-client_id = 'mRZ23SHjLS7vFQ'
-client_secret = '11BONHjapuyVA7AvvkeBHmsIV2I'
-username = 'Warrant3112'
-password = 'Jupiter22'
-user_agent = 'Noodles'
+client_id = 
+client_secret = 
+username = 
+password = 
+user_agent = 
+
+#praw api
