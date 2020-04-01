@@ -1,3 +1,8 @@
+nltk
+tflearn
+numpy
+tensorflow-gpu
+flask
 requests
 PIL
 praw
