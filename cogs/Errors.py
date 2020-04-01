@@ -31,14 +31,13 @@ class Errors(commands.Cog):
                     await ctx.send(embed=embed)
                     break
                 try:
-                    res = await self.bot.wait_for('reaction_add', timeout=30.0)
+                    res = await self.bot.wait_for('reaction_add', timeout=10.0)
                 except:
                     break
                 if str(res[1]) == str(ctx.author):
                     emoji = str(res[0].emoji)
                     await ctx.message.remove_reaction(res[0].emoji, res[1])
             raise error
-
 
 
 def setup(bot):

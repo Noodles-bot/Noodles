@@ -57,6 +57,8 @@ class Levels(commands.Cog):
                 await channel.send(f"{message.author.display_name} is now level {user['lvl'] + 1}")
             elif "668213545909092354" in id:
                 pass
+            elif "649674786670116896" in id:
+                pass
             elif channel is not None:
                 await channel.send(f"{message.author.display_name} is now level {user['lvl'] + 1}")
             else:

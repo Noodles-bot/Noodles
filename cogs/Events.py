@@ -1,6 +1,8 @@
+import random
+
 import discord
 from discord.ext import commands
-
+from utils.fun.data import tips
 
 # import time
 # import asyncio
@@ -44,6 +46,27 @@ class Events(commands.Cog):
             role = discord.utils.get(member.guild.roles, id=681158437434163268)
             await member.add_roles(role, atomic=True)
         print(f'{member} joined {name}')
+
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        g = await self.bot.pg_con.fetch("SELECT * FROM guild_settings WHERE guild_id = $1", str(guild.id))
+        if not g:
+            await self.bot.pg_con.fetch("INSERT INTO guild_settings (guild_id) VALUES ($1)", str(guild.id))
+
+    @commands.command()
+    @commands.is_owner()
+    async def insert(self, ctx):
+        g = await self.bot.pg_con.fetch("SELECT * FROM guild_settings WHERE guild_id = $1", str(ctx.guild.id))
+        if not g:
+            await self.bot.pg_con.fetch("INSERT INTO guild_settings (guild_id) VALUES ($1)", str(ctx.guild.id))
+            await ctx.send(f"Inserted {ctx.guild.id} into the database")
+        else:
+            await ctx.send(f"{ctx.guild.id} already in database")
+
+    @commands.Cog.listener()
+    async def on_command_completion(self, ctx):
+        if random.randint(0, 30) == 15:
+            await ctx.send(f"tip: {random.choice(tips).replace('%prefix%', str(ctx.prefix))}")
 
 
 def setup(bot):

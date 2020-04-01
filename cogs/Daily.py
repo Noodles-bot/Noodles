@@ -18,7 +18,6 @@ class Daily(commands.Cog):
             return
 
         author_id = str(ctx.author.id)
-        guild_id = str(ctx.guild.id)
 
         i = await self.bot.pg_con.fetch("SELECT bal FROM users WHERE user_id = $1", author_id)
         if i[0] is None:

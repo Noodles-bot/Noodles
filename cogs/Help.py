@@ -148,9 +148,9 @@ class Help(commands.Cog):
     async def helpadmin(self, ctx):
         embed = discord.Embed(title='Help for Mods. [] = necessary <> = optional',
                               color=0xFFA500)
-        embed.add_field(name='kick', value=',kick [user] <reason>', inline=False)
-        embed.add_field(name='ban', value=',ban [user] <reason>', inline=False)
-        embed.add_field(name='clear', value=',clear [integer amount]', inline=False)
+        embed.add_field(name='kick', value=f'{ctx.prefix}kick [user] <reason>', inline=False)
+        embed.add_field(name='ban', value=f'{ctx.prefix}ban [user] <reason>', inline=False)
+        embed.add_field(name='clear', value=f'{ctx.prefix}clear [integer amount]', inline=False)
         embed.add_field(name='mute', value=f'{ctx.prefix}mute [user] <time in minutes, default 5 minutes>',
                         inline=False)
         embed.add_field(name='mute', value=f'{ctx.prefix}unmute [user]', inline=False)
@@ -161,8 +161,12 @@ class Help(commands.Cog):
     async def commands(self, ctx):
         cmd = []
         for name in self.bot.commands:
+            try:
+                await name.can_run(ctx)
+            except:
+                continue
             cmd.append(name.name)
-        embed = discord.Embed(title='Commands:', description=ctx.prefix + f'\n{ctx.prefix}'.join(sorted(cmd)), color=0xFFA500)
+        embed = discord.Embed(title=f'Commands:({len(cmd)})', description=ctx.prefix + f'\n{ctx.prefix}'.join(sorted(cmd)), color=0xFFA500)
         await ctx.send(embed=embed)
 
 

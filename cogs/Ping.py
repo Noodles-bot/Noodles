@@ -65,9 +65,15 @@ class Ping(commands.Cog):
     @commands.command()
     async def ping(self, ctx):
         embed = discord.Embed(title=' ',
-                              description=f'Pong! :ping_pong:\n *Response time: {round(self.bot.latency * 1000, 3)}ms*',
+                              description=f'Pong! :ping_pong:\n *Bot latency:* {round(self.bot.latency * 1000, 3)}ms',
                               color=0xFFA500)
-        await ctx.send(embed=embed)
+        t1 = time.perf_counter()
+        msg = await ctx.send(embed=embed)
+        t2 = time.perf_counter()
+        e1 = discord.Embed(title=' ',
+                           description=f'Pong! :ping_pong:\n *Bot latency:* {round(self.bot.latency * 1000, 3)}ms\n*Actual response time:* {round((t2 - t1) * 1000, 3)}ms',
+                           color=0xFFA500)
+        await msg.edit(embed=e1)
 
 
 def setup(bot):

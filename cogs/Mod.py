@@ -28,8 +28,8 @@ class Mod(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(kick_members=True)
-    async def mute(self, ctx, user: discord.Member, time1: int = 5):
-        time = time1 * 60
+    async def mute(self, ctx, user: discord.Member, time: int = 5):
+        time = time * 60
         if ctx.author == user:
             await ctx.send("You cannot mute yourself.")
         else:
@@ -44,7 +44,7 @@ class Mod(commands.Cog):
                 except discord.Forbidden:
                     return await ctx.send("I have no permissions to make a muted role")
             elif rolem not in user.roles:
-                embed = discord.Embed(title=f'User {user.name} has been successfully muted for {time1}m.',
+                embed = discord.Embed(title=f'User {user.name} has been successfully muted for {time / 60}m.',
                                       color=0xFFA500)
                 embed.add_field(name="Shhh!", value="<:shut:689407119728181437>")
                 embed.set_thumbnail(url=user.avatar_url)

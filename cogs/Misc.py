@@ -100,8 +100,6 @@ class Misc(commands.Cog):
         await ctx.message.delete()
         await ctx.send(embed=embed)
 
-
-
     @commands.command()
     async def status(self, ctx):
         emote = {
@@ -299,22 +297,23 @@ class Misc(commands.Cog):
         if isinstance(ctx.channel, discord.DMChannel):
             guild = "`No server! Sent via Private Message!`"
         else:
-            guild = f"`{ctx.guild.id}` / `{ctx.guild.name}`"
+            guild = f"{ctx.guild.id} / {ctx.guild.name}"
         msg = embedinator(ctx.author, 0xFFA500, suggestion, formatUser=True)
+        msg.set_footer(text=f'User: {ctx.author.id} | Guild: {guild}')
         owner = self.bot.get_user(357918459058978816)
-        await owner.send(
-                f"You have received a new suggestion! The user's name is `{ctx.author}` Server: {guild}",
-                embed=msg)
-        await ctx.author.send("Your suggestion has been received!!")
+        await owner.send(embed=msg)
+        await ctx.message.add_reaction('<:check:694305541417336872>')
 
     @commands.group(invoke_without_command=True)
     async def say(self, ctx, *, msg):
         await ctx.message.delete()
         await ctx.send(discord.utils.escape_mentions(msg))
 
-    @say.command()
-    async def test(self, ctx, *, message):
-        await ctx.send("test lmao you gay")
+    @commands.command()
+    async def donate(self, ctx):
+        await ctx.send(embed=discord.Embed(title='Click here to donate',
+                                           url='https://www.paypal.com/donate/?token=fDj3XvUlVRXKKC94oQqqoiD26yQo41bzMCqs_-hu6P464XFFrzlKQnxkraualZlAkN1WFm&country.x=NL&locale.x=en_NL&Z3JncnB0=',
+                                           color=0xFFA500))
 
 
 def setup(bot):
