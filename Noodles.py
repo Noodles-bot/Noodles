@@ -62,6 +62,8 @@ async def reboot(ctx):
 @bot.command()
 @commands.is_owner()
 async def reload(ctx, cog=None):
+    cog = cog.lower()
+    cog = cog.capitalize()
     if cog is None:
         for filename in os.listdir('./cogs'):
             if filename.endswith('.py'):
@@ -88,6 +90,8 @@ async def reload(ctx, cog=None):
 @bot.command()
 @commands.is_owner()
 async def unload(ctx, cog=None):
+    cog = cog.lower()
+    cog = cog.capitalize()
     if cog is None:
         for filename in os.listdir('./cogs'):
             if filename.endswith('.py'):
@@ -106,12 +110,14 @@ async def unload(ctx, cog=None):
             raise error
 
     await ctx.message.clear_reactions()
-    await ctx.send(f'Successfully unloaded {cog1}')
+    await ctx.send(f"Successfully unloaded {cog1}")
 
 
 @bot.command()
 @commands.is_owner()
 async def load(ctx, cog=None):
+    cog = cog.lower()
+    cog = cog.capitalize()
     if cog is None:
         for filename in os.listdir('./cogs'):
             if filename.endswith('.py'):
@@ -143,4 +149,4 @@ for cog in os.listdir(".\\cogs"):
             raise e
 
 bot.loop.run_until_complete(create_db_pool())
-bot.run(TOKEN)
+bot.run('Njc1NTQyMDExNDU3MDQ0NTEy.Xj5Hgw.lfU6PZf77OYmubUXkZV-C3Fsxcg')
