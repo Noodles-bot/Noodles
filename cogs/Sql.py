@@ -71,6 +71,10 @@ class Sql(commands.Cog):
     async def create_bank(self, author_id):
         await self.bot.pg_con.execute("INSERT INTO bank (user_id, banklvl, bankxp) VALUES ($1, 1, 0)", author_id)
 
+    async def get_lvl(self, user_id):
+        i = await self.bot.pg_con.fetch("SELECT lvl, user_id FROM users WHERE user_id = $1", user_id)
+        return i[0][0]
+
     async def bank_lvl_up(self, author_id):
         user = await self.bot.pg_con.fetchrow("SELECT * FROM bank WHERE user_id = $1", author_id)
         cur_xp = user['bankxp']

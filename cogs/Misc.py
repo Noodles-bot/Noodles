@@ -1,30 +1,44 @@
 import codecs
 import pathlib
-import string
-
+import time
 import psutil
 import datetime
 import discord
 import os
+import googletrans
+import aiohttp
 
+from PIL import Image, ImageDraw, ImageFont
 from discord.ext import commands
 from datetime import datetime
 
 from utils.tools import embedinator
+from utils.fun.data import color
+from utils.flags import *
+
+session = aiohttp.ClientSession()
+
+
+def percentage(total, x):
+    return "{:.2f}%".format(x * 100 / total) if total > 0 else 0
 
 
 class Misc(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.trans = googletrans.Translator()
+        self.thumb = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/COVID-19_Outbreak_World_Map.svg/langen-1000px-COVID-19_Outbreak_World_Map.svg.png?t="
 
-    @commands.command(aliases=['about'])
+    @commands.command(aliases=['about', 'ui'])
     async def userinfo(self, ctx, member: discord.Member = None):
+        """Gets the info about you or someone else"""
         emote = {
             "idle": '<:idle:689360441956499501>',
             "offline": '<:offline:689360441822150701>',
             "dnd": '<:dnd:689360442098843672>',
-            "online": '<:online:689360442048643285>'
+            "online": '<:online:689360442048643285>',
+            "streaming": '<:status_streaming:596576747294818305>'
         }
         if member is None:
             member = ctx.author
@@ -58,6 +72,7 @@ class Misc(commands.Cog):
 
     @commands.command(aliases=['av', 'avata', 'pfp'])
     async def avatar(self, ctx, member: discord.Member = None):
+        """Gets your secksy avatar"""
         if member is None:
             member = ctx.author
         avurl = str(member.avatar_url).replace("webp", "png")
@@ -73,51 +88,38 @@ class Misc(commands.Cog):
 
     @commands.command(aliases=['users'])
     async def usercount(self, ctx):
+        """Gets the amount of users in current guild"""
         people = []
         for user in ctx.guild.members:
             people.append(user)
         name = ctx.guild.name
         embed = discord.Embed(title='Usercount',
                               description=f"""Number of epic gamers in {name}: {len(people)}""",
-                              color=0xFFA500)
+                              color=color)
         await ctx.send(embed=embed)
 
     @commands.command()
     async def embed(self, ctx, title, description=None):
+        """Creates an custom embed with given text"""
         if description is None:
             member = ctx.author
             embed = discord.Embed(title=f'{title}',
                                   description=f'{title}',
-                                  color=0xFFA500)
+                                  color=color)
             embed.set_author(name=f'{member}', icon_url=ctx.author.avatar_url)
         else:
             member = ctx.author
             embed = discord.Embed(title=f'{title}',
                                   description=f'{description}',
-                                  color=0xFFA500)
+                                  color=color)
             embed.set_author(name=f'{member}', icon_url=ctx.author.avatar_url)
 
         await ctx.message.delete()
         await ctx.send(embed=embed)
 
-    @commands.command()
-    async def status(self, ctx):
-        emote = {
-            "idle": '<:idle:689360441956499501>',
-            "offline": '<:offline:689360441822150701>',
-            "dnd": '<:dnd:689360442098843672>',
-            "online": '<:online:689360442048643285>'
-        }
-        member = ctx.author
-        embed = discord.Embed(colour=member.color, timestamp=ctx.message.created_at)
-        embed.add_field(name='Status:', value=emote[str(member.web_status)] + 'Web status' + '\n' + emote[
-            str(member.mobile_status)] + 'Mobile Status' + '\n' + emote[
-                                                  str(member.desktop_status)] + 'Desktop Status' + '\n', inline=False)
-
-        await ctx.send(embed=embed)
-
     @commands.command(aliases=['fav', 'fetch'])
     async def fetchav(self, ctx, user_id: int):
+        """Fetches an avatar for any user id"""
         user = await self.bot.fetch_user(user_id)
         embed = discord.Embed(title='', description=f'**Showing the secksy avatar of: {user.name}**',
                               color=ctx.author.color)
@@ -137,10 +139,11 @@ class Misc(commands.Cog):
 
     @commands.command(aliases=['poll'])
     async def vote(self, ctx, *, poll):
+        """Creates an poll"""
         embed = discord.Embed(
             title=' ',
             description=f"**I need ur opinion:**\n{poll}",
-            color=0xFFA500)
+            color=color)
         embed.set_footer(
             text=f'Vote created by {ctx.author.name}',
             icon_url=ctx.author.avatar_url_as(static_format='png'))
@@ -152,12 +155,6 @@ class Misc(commands.Cog):
         await ctx.message.delete()
 
     @commands.command()
-    async def info(self, ctx):
-        embed = discord.Embed(color=0xFFA500)
-        embed.add_field(name='info', value='**Uptime:** ')
-        await ctx.send(embed=embed)
-
-    @commands.command()
     @commands.is_owner()
     async def cpu(self, ctx):
         list = []
@@ -165,7 +162,7 @@ class Misc(commands.Cog):
         for index, value in enumerate(usage, 1):
             list.append(f'**Thread {index}**: {value}%')
 
-        embed = discord.Embed(title='CPU info', color=0xFFA500)
+        embed = discord.Embed(title='CPU info', color=color)
         embed.add_field(name='Main info:',
                         value=f'**CPU cores: **{psutil.cpu_count(logical=False)}\n**CPU threads: **{psutil.cpu_count()}\n',
                         inline=False)
@@ -178,7 +175,7 @@ class Misc(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def ram(self, ctx):
-        embed = discord.Embed(title='RAM info', color=0xFFA500)
+        embed = discord.Embed(title='RAM info', color=color)
         embed.add_field(name='Main info:',
                         value=f'**Total RAM: **{round(psutil.virtual_memory().total / 1000000000, 2)}GB\n**Frequency: **3200Mhz',
                         inline=False)
@@ -189,11 +186,12 @@ class Misc(commands.Cog):
 
     @commands.command(aliases=['perms'])
     async def permissions(self, ctx):
+        """Gets the permissions for user"""
         perms = []
         negperms = []
         permissions = ctx.channel.permissions_for(ctx.author)
 
-        embed = discord.Embed(title=':customs:  Permissions', color=0xFFA500, timestamp=ctx.message.created_at)
+        embed = discord.Embed(title=':customs:  Permissions', color=color, timestamp=ctx.message.created_at)
         embed.add_field(name='Server', value=ctx.guild)
         embed.add_field(name='Channel', value=ctx.channel, inline=False)
 
@@ -212,11 +210,12 @@ class Misc(commands.Cog):
 
     @commands.command(aliases=['botperms'])
     async def botpermissions(self, ctx):
+        """Gets the bots permissions"""
         perms = []
         negperms = []
         permissions = ctx.channel.permissions_for(ctx.me)
 
-        embed = discord.Embed(title=':customs:  Permissions', color=0xFFA500, timestamp=ctx.message.created_at)
+        embed = discord.Embed(title=':customs:  Permissions', color=color, timestamp=ctx.message.created_at)
         embed.add_field(name='Server', value=ctx.guild)
         embed.add_field(name='Channel', value=ctx.channel, inline=False)
 
@@ -235,16 +234,17 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def cogs(self, ctx):
+        """Shows all active cogs"""
         cogs = []
         for cog in self.bot.cogs:
             cogs.append(cog)
         embed = discord.Embed(title=f'Active cogs ({len(cogs) - 1}):', description='```' + '\n'.join(cogs) + '```',
-                              color=0xFFA500)
+                              color=color)
         await ctx.send(embed=embed)
 
     @commands.command()
     async def info(self, ctx):
-        """Command made by nickofolas#0660"""
+        """Gets info about bot"""
         total = 0
         python_files = []
         for path, subdirs, files in os.walk('.'):
@@ -266,7 +266,7 @@ class Misc(commands.Cog):
         embed = discord.Embed(
             title='',
             description='',
-            color=0xFFA500)
+            color=color)
         embed.add_field(
             name='**Bot Info**',
             value=
@@ -289,16 +289,13 @@ class Misc(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    async def ascii(self, ctx, *, i):
-        await ctx.send(' '.join(format(ord(x), 'b') for x in i))
-
-    @commands.command()
     async def suggest(self, ctx, *, suggestion: str):
+        """Sends a suggestion to the creator"""
         if isinstance(ctx.channel, discord.DMChannel):
             guild = "`No server! Sent via Private Message!`"
         else:
             guild = f"{ctx.guild.id} / {ctx.guild.name}"
-        msg = embedinator(ctx.author, 0xFFA500, suggestion, formatUser=True)
+        msg = embedinator(ctx.author, color, suggestion, formatUser=True)
         msg.set_footer(text=f'User: {ctx.author.id} | Guild: {guild}')
         owner = self.bot.get_user(357918459058978816)
         await owner.send(embed=msg)
@@ -306,14 +303,278 @@ class Misc(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     async def say(self, ctx, *, msg):
+        """Make the bot say anything"""
         await ctx.message.delete()
         await ctx.send(discord.utils.escape_mentions(msg))
 
     @commands.command()
     async def donate(self, ctx):
+        """Helps the creator out and gives you some sweet perks"""
         await ctx.send(embed=discord.Embed(title='Click here to donate',
                                            url='https://www.paypal.com/donate/?token=fDj3XvUlVRXKKC94oQqqoiD26yQo41bzMCqs_-hu6P464XFFrzlKQnxkraualZlAkN1WFm&country.x=NL&locale.x=en_NL&Z3JncnB0=',
-                                           color=0xFFA500))
+                                           color=color))
+
+    @commands.command()
+    async def ping(self, ctx):
+        """Shows the bot latency"""
+        embed = discord.Embed(title=' ',
+                              description=f'Pong! :ping_pong:\n*Bot latency:* {round(self.bot.latency * 1000, 3)}ms',
+                              color=color)
+        t1 = time.perf_counter()
+        msg = await ctx.send(embed=embed)
+        t2 = time.perf_counter()
+        e1 = discord.Embed(title=' ',
+                           description=f'Pong! :ping_pong:\n*Bot latency:* {round(self.bot.latency * 1000, 3)}ms\n*Actual response time:* {round((t2 - t1) * 1000, 3)}ms',
+                           color=color)
+        await msg.edit(embed=e1)
+
+    @commands.command()
+    async def guild(self, ctx):
+        """Gets info about the current guild"""
+        people = []
+        roles = []
+        for role in reversed(ctx.guild.roles):
+            roles.append(role.mention)
+        for user in ctx.guild.members:
+            people.append(user)
+        text_channel = len([x for x in ctx.guild.channels if type(x) == discord.channel.TextChannel])
+        voice_channel = len([x for x in ctx.guild.channels if type(x) == discord.channel.VoiceChannel])
+        features = ','.join(ctx.guild.features)
+        embed = discord.Embed(title='', type='rich', description=f'**{ctx.guild.name} | {ctx.guild.id}**', color=color)
+        embed.set_thumbnail(url=ctx.guild.icon_url)
+        embed.add_field(name='Main info',
+                        value=f'**Channels:** {text_channel} <:text_channel:696498775711154196> | {voice_channel} <:voice_channel:696498810721009725>\n'
+                              f'**Verification Level:** {ctx.guild.verification_level}\n'
+                              f'**Features:** {features.lower().capitalize()}\n'
+                              f'**Emotes:** {len(ctx.guild.emojis)}\n'
+                              f'**Created on:** {ctx.guild.created_at.strftime("%a, %#d %B %Y")}\n'
+                              f'**Max File Size:** {int(ctx.guild.filesize_limit / 1000000)} MB\n'
+                              f'**Max Bitrate:** {int(ctx.guild.bitrate_limit / 1000)} KB/s\n'
+                              f'**Region:** {str(ctx.guild.region).capitalize()}\n', inline=False)
+        embed.add_field(name='Members', value=f'**Total:** {len(people)}\n'
+                                              f'**Owner:** {ctx.guild.owner.mention}', inline=False)
+        embed.add_field(name=f'Top 10 roles ({len(ctx.guild.roles)} total)', value=''.join(roles[0:10]))
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def invite(self, ctx):
+        """Sends an invite to add the bot"""
+        await ctx.send(
+            'https://discordapp.com/api/oauth2/authorize?client_id=675542011457044512&permissions=2147483639&scope=bot')
+
+    @commands.command(aliases=['trans'])
+    async def translate(self, ctx, *, message: commands.clean_content):
+        """Tries to auto recognize the language you're trying to translate"""
+
+        loop = self.bot.loop
+
+        try:
+            ret = await loop.run_in_executor(None, self.trans.translate, message)
+        except Exception as e:
+            return await ctx.send(f'An error occurred: {e.__class__.__name__}: {e}')
+
+        embed = discord.Embed(title='Translated', color=color)
+        src = googletrans.LANGUAGES.get(ret.src, '(auto-detected)').title()
+        dest = googletrans.LANGUAGES.get(ret.dest, 'Unknown').title()
+        embed.add_field(name=f'From {src}', value=ret.origin, inline=False)
+        embed.add_field(name=f'To {dest}', value=ret.text, inline=False)
+        await ctx.send(embed=embed)
+
+    @commands.group(invoke_without_command=True)
+    async def covid(self, ctx, country=None):
+        """Gets info about country or info about the worlds cases"""
+        if country is None:
+            async with session.get('https://corona.lmao.ninja/all') as resp:
+                data = await resp.json()
+            async with session.get('https://corona.lmao.ninja/yesterday/all') as resp:
+                y = await resp.json()
+            todayRecovered = data['recovered'] - y['recovered']
+            embed = discord.Embed(title='', color=color)
+            embed.set_author(name=f'Coronavirus COVID-19 stats',
+                             icon_url='https://i.imgur.com/htEqt0S.png')
+            embed.add_field(name='<:confirmed:698082058550902794> **Confirmed**',
+                            value=f'{data["cases"]:,}')
+            embed.add_field(name='<:recoverd:698082058538319922> **Recovered**',
+                            value=f'{data["recovered"]:,} (**{percentage(data["cases"], data["recovered"])}**)')
+            embed.add_field(name='<:death:698082058014031902> **Deaths**',
+                            value=f'{data["deaths"]:,} (**{percentage(data["cases"], data["deaths"])}**)')
+            embed.add_field(name='<:date:698082058098180127> **Today\nconfirmed**',
+                            value=f'+{data["todayCases"]:,} (**{percentage(data["cases"], data["todayCases"])}**)')
+            embed.add_field(name='<:date:698082058098180127> **Today\nrecovered**',
+                            value=f'+{todayRecovered:,} (**{percentage(data["cases"], todayRecovered)}**)')
+            embed.add_field(name='<:date:698082058098180127> **Today\ndeaths**',
+                            value=f'+{data["todayDeaths"]:,} (**{percentage(data["cases"], data["todayDeaths"])}**)')
+            embed.add_field(name='<:active:698082057716367421> **Active**',
+                            value=f'{data["active"]:,} (**{percentage(data["cases"], data["active"])}**)')
+            embed.add_field(name=':hospital: **Critical**',
+                            value=f'{data["critical"]:,} (**{percentage(data["active"], data["critical"])}**)')
+            embed.add_field(name=':syringe: **Tests**',
+                            value=f'{data["tests"]:,}')
+            date = data["updated"] / 1000
+            date = datetime.fromtimestamp(date).strftime("%#d %B %Y, %I:%M %p CET")
+            embed.set_footer(text="Last updated at: " + date)
+            embed.set_thumbnail(url=self.thumb)
+            await ctx.send(embed=embed)
+        else:
+            try:
+                async with session.get(f'https://corona.lmao.ninja/countries/{country}') as resp:
+                    data = await resp.json()
+                async with session.get(f'https://corona.lmao.ninja/yesterday/{country}') as resp:
+                    y = await resp.json()
+                todayRecovered = data['recovered'] - y['recovered']
+                embed = discord.Embed(title='', color=color)
+                embed.set_author(name=f'Coronavirus COVID-19 stats - {data["country"]}',
+                                 icon_url=data['countryInfo']['flag'])
+                embed.add_field(name='<:confirmed:698082058550902794> **Confirmed**',
+                                value=f'{data["cases"]:,}')
+                embed.add_field(name='<:recoverd:698082058538319922> **Recovered**',
+                                value=f'{data["recovered"]:,} (**{percentage(data["cases"], data["recovered"])}**)')
+                embed.add_field(name='<:death:698082058014031902> **Deaths**',
+                                value=f'{data["deaths"]:,} (**{percentage(data["cases"], data["deaths"])}**)')
+                embed.add_field(name='<:date:698082058098180127> **Today\nconfirmed**',
+                                value=f'+{data["todayCases"]:,} (**{percentage(data["cases"], data["todayCases"])}**)')
+                embed.add_field(name='<:date:698082058098180127> **Today\nrecovered**',
+                                value=f'+{todayRecovered:,} (**{percentage(data["cases"], todayRecovered)}**)')
+                embed.add_field(name='<:date:698082058098180127> **Today\ndeaths**',
+                                value=f'+{data["todayDeaths"]:,} (**{percentage(data["cases"], data["todayDeaths"])}**)')
+                embed.add_field(name='<:active:698082057716367421> **Active**',
+                                value=f'{data["active"]:,} (**{percentage(data["cases"], data["active"])}**)')
+                embed.add_field(name=':hospital: **Critical**',
+                                value=f'{data["critical"]:,} (**{percentage(data["active"], data["critical"])}**)')
+                embed.add_field(name=':syringe: **Tests**',
+                                value=f'{data["tests"]:,}')
+                date = data["updated"] / 1000
+                date = datetime.fromtimestamp(date).strftime("%#d %B %Y, %I:%M %p CET")
+                embed.set_footer(text="Last updated at: " + date)
+                await ctx.send(embed=embed)
+            except KeyError:
+                async with session.get(f'https://corona.lmao.ninja/countries/{country}') as resp:
+                    data = await resp.json()
+                embed = discord.Embed(title='', description=data["message"], color=color)
+                await ctx.send(embed=embed)
+
+    @covid.command()
+    async def state(self, ctx, state=None):
+        """"Gets info about state or states in the USA, affected by COVID-19"""
+        if state is None:
+            states = []
+            async with session.get('https://corona.lmao.ninja/states?sort=cases') as resp:
+                data = await resp.json()
+            async with session.get('https://corona.lmao.ninja/countries/us') as resp:
+                i = await resp.json()
+            for index, d in enumerate(data, 0):
+                if (index % 2) == 0:
+                    states.append(f'{data[index]["state"]}: {data[index]["cases"]} [+{data[index]["todayCases"]}]')
+                else:
+                    states.append(
+                        f'**{data[index]["state"]}: {data[index]["cases"]} [+{data[index]["todayCases"]}]**')
+                if index >= 65:
+                    break
+
+            embed = discord.Embed(title='',
+                                  description=f'<:confirmed:698082058550902794> Confirmed **{i["cases"]:,}** [+**{i["todayCases"]:,}**]\n'
+                                              f'<:death:698082058014031902> Deaths **{i["deaths"]:,}** [+**{i["todayDeaths"]:,}**]'
+                                              f'\n\n' + '\n'.join(states), color=color)
+            embed.set_thumbnail(url='https://i.imgur.com/VeaLsEv.png')
+            date = i["updated"] / 1000
+            date = datetime.fromtimestamp(date).strftime("%#d %B %Y, %I:%M %p CET")
+            embed.set_footer(text="Last updated at: " + date)
+            embed.set_author(name=f'All states affected by Coronavirus COVID-19',
+                             icon_url=i["countryInfo"]["flag"])
+            await ctx.send(embed=embed)
+        else:
+            try:
+                async with session.get(f'https://corona.lmao.ninja/states/{state}') as resp:
+                    data = await resp.json()
+                embed = discord.Embed(title='', color=color)
+                embed.set_author(name=f'Coronavirus COVID-19 stats - {data["state"]}')
+                embed.add_field(name='<:confirmed:698082058550902794> **Confirmed**',
+                                value=f'{data["cases"]:,}')
+                embed.add_field(name='<:death:698082058014031902> **Deaths**',
+                                value=f'{data["deaths"]:,} (**{percentage(data["cases"], data["deaths"])}**)')
+                embed.add_field(name='<:date:698082058098180127> **Today\nconfirmed**',
+                                value=f'+{data["todayCases"]:,} (**{percentage(data["cases"], data["todayCases"])}**)')
+                embed.add_field(name='<:date:698082058098180127> **Today\ndeaths**',
+                                value=f'+{data["todayDeaths"]:,} (**{percentage(data["cases"], data["todayDeaths"])}**)')
+                embed.add_field(name='<:active:698082057716367421> **Active**',
+                                value=f'{data["active"]:,} (**{percentage(data["cases"], data["active"])}**)')
+                embed.add_field(name=':syringe: **Tests**',
+                                value=f'{data["tests"]:,}')
+                await ctx.send(embed=embed)
+            except KeyError:
+                async with session.get(f'https://corona.lmao.ninja/states/{state}') as resp:
+                    data = await resp.json()
+                embed = discord.Embed(title='', description=data["message"], color=color)
+                await ctx.send(embed=embed)
+
+    @covid.command()
+    async def countries(self, ctx):
+        """Gets top 65 countries affected by the COVID-19 virus"""
+        countries = []
+        async with session.get('https://corona.lmao.ninja/countries?sort=cases') as resp:
+            data = await resp.json()
+        async with session.get('https://corona.lmao.ninja/all') as resp:
+            i = await resp.json()
+
+        for index, d in enumerate(data, 0):
+            if (index % 2) == 0:
+                countries.append(f'{data[index]["country"]}: {data[index]["cases"]} [+{data[index]["todayCases"]}]')
+            else:
+                countries.append(f'**{data[index]["country"]}: {data[index]["cases"]} [+{data[index]["todayCases"]}]**')
+            if index >= 65:
+                break
+
+        embed = discord.Embed(title='',
+                              description=f'<:confirmed:698082058550902794> Confirmed **{i["cases"]:,}** [+**{i["todayCases"]:,}**]\n'
+                                          f'<:death:698082058014031902> Deaths **{i["deaths"]:,}** [+**{i["todayDeaths"]:,}**]'
+                                          f'\n\n' + '\n'.join(countries), color=color)
+        embed.set_thumbnail(url=self.thumb)
+        date = i["updated"] / 1000
+        date = datetime.fromtimestamp(date).strftime("%#d %B %Y, %I:%M %p CET")
+        embed.set_footer(text="Last updated at: " + date)
+        embed.set_author(name=f'All countries affected by Coronavirus COVID-19',
+                         icon_url='https://i.imgur.com/htEqt0S.png')
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def pillow(self, ctx, user: discord.Member = None):
+        """Gets info about user using the pillow library"""
+        msg = await ctx.send("Getting info....")
+        if user is None:
+            user = ctx.author
+        img = Image.open("C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/utils/img.png")
+        draw = ImageDraw.Draw(img)
+        font = ImageFont.truetype("C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/utils/fonts/arialbd.ttf",
+                                  100)
+        fontbig = ImageFont.truetype("C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/utils/fonts/font.ttf",
+                                     350)
+        draw.text((200, 10), "User Info:", (255, 255, 255), font=fontbig)
+        draw.text((50, 500), "Username: {}".format(user.name), (255, 255, 255),
+                  font=font)
+        draw.text((50, 700), "ID: {}".format(user.id), (255, 255, 255), font=font)
+        draw.text((50, 900), "User Status: {}".format(user.status), (255, 255, 255), font=font)
+        draw.text((50, 1100), "Account created: {}".format(user.created_at.strftime("%a, %#d %B %Y UTC")),
+                  (255, 255, 255),
+                  font=font)
+        draw.text((50, 1300), "Nickname: {}".format(user.display_name), (255, 255, 255),
+                  font=font)
+        draw.text((50, 1500), "Users' Top Role: {}".format(user.top_role), (255, 255, 255),
+                  font=font)
+        draw.text((50, 1700), "User Joined: {}".format(user.joined_at.strftime("%a, %#d %B %Y UTC")), (255, 255, 255),
+                  font=font)
+        img.save('infoimg2.png')
+        await ctx.send(file=discord.File("C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/infoimg2.png",
+                                         filename="infoimg2.png"))
+        await msg.delete()
+
+    @commands.command()
+    async def flags(self, ctx, member: discord.Member = None):
+        member = member or ctx.author
+        flags = []
+        usr = await self.bot.http.get_user(member.id)
+        for flag in UserFlags((usr['public_flags'])):
+            flags.append(flag)
+        await ctx.send(flags)
 
 
 def setup(bot):

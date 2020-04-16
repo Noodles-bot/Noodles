@@ -22,6 +22,7 @@ class Levels(commands.Cog):
 
     @bot.Cog.listener()
     async def on_message(self, message):
+        sql = self.bot.get_cog('Sql')
         if message.author == self.bot.user:
             return
 
@@ -59,11 +60,17 @@ class Levels(commands.Cog):
                 pass
             elif "649674786670116896" in id:
                 pass
+            elif "692742970532823089" in id:
+                lvl = await sql.get_lvl(user_id=message.author.id)
+                if (lvl >= 0) and (lvl < 20):
+                    role = discord.utils.get(message.guild.roles, id=696708997239275630)
+                    await message.author.add_roles(role, atomic=True)
+
             elif channel is not None:
-                await channel.send(f"{message.author.display_name} is now level {user['lvl'] + 1}")
+                pass
+
             else:
-                channel = message.channel
-                await channel.send(f"{message.author.display_name} is now level {user['lvl'] + 1}")
+                pass
 
     @bot.command(aliases=['lvl'])
     async def level(self, ctx, member: discord.Member = None):

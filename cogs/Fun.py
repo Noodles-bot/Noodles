@@ -1,4 +1,4 @@
-import io
+import aiohttp
 import requests
 import random
 
@@ -7,6 +7,8 @@ from discord.ext import commands
 
 from utils.fun.fortunes import fortunes
 from utils.fun.data import fight_results
+
+session = aiohttp.ClientSession()
 
 
 class Fun(commands.Cog):
@@ -47,11 +49,6 @@ class Fun(commands.Cog):
     async def doot(self, ctx):
         await ctx.send('<@420788676516249601> <:doot_doot:673397860427104288> <:doot_doot:673397860427104288>')
 
-    @commands.command()
-    async def spam(self, ctx, *, i: str):
-        await ctx.send(
-            f'{i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i} {i}')
-
     @commands.command(aliases=['flip'])
     async def coinflip(self, ctx):
         coin = random.randrange(2)
@@ -77,8 +74,8 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=['catto'])
     async def cat(self, ctx):
-        response = requests.get('https://aws.random.cat/meow')
-        data = response.json()
+        async with session.get('https://aws.random.cat/meow') as resp:
+            data = await resp.json()
         embed = discord.Embed(title='Meow!!', color=0xFFA500)
         embed.set_image(url=data['file'])
         embed.set_footer(text='Powered by: https://aws.random.cat/meow')
@@ -86,8 +83,8 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=['doggo'])
     async def dog(self, ctx):
-        response = requests.get('https://random.dog/woof.json')
-        data = response.json()
+        async with session.get('https://random.dog/woof.json') as resp:
+            data = await resp.json()
         embed = discord.Embed(title='Woof!! Woof!!', color=0xFFA500)
         embed.set_image(url=data['url'])
         embed.set_footer(text='Powered by: https://random.dog/woof.json')
@@ -96,6 +93,8 @@ class Fun(commands.Cog):
     @commands.command()
     async def fortune(self, ctx):
         await ctx.send(f'```{random.choice(fortunes)}```')
+
+    # TODO: Add tic tac toe
 
 
 def setup(bot):

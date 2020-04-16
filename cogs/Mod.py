@@ -64,6 +64,7 @@ class Mod(commands.Cog):
                 await ctx.send(f'User {user.mention} is already muted.')
 
     @commands.command()
+    @commands.has_permissions(kick_members=True)
     async def unmute(self, ctx, user: discord.Member):
         rolem = discord.utils.get(ctx.message.guild.roles, name='Muted')
         if rolem in user.roles:

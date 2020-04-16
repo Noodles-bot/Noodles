@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 
+from utils import checks
+
 
 class Eshack(commands.Cog):
 
@@ -9,6 +11,7 @@ class Eshack(commands.Cog):
 
     @commands.command()
     @commands.has_role("Server Moderator")
+    @checks.is_guild(guild=564974738716360724)
     async def whitelist(self, ctx, i, name):
         i1 = i.lower()
         if i1 == 'add':
@@ -55,7 +58,10 @@ class Eshack(commands.Cog):
             await vc.edit(name=f'Voice Channels: {voice}')
 
     @commands.Cog.listener()
+    @commands.guild_only()
     async def on_message(self, message):
+        if isinstance(message.channel, discord.DMChannel):
+            return
         msg = message.content.lower()
         if '564974738716360724' in str(message.guild.id):
             if '618960977664147477' == str(message.channel.id):
@@ -111,6 +117,64 @@ class Eshack(commands.Cog):
         if "564974738716360724" in id:
             members = self.bot.get_channel(689476024723177488)
             await members.edit(name=f'Members: {len(people)}')
+
+    @commands.Cog.listener()
+    async def on_reaction_add(self, reaction, user):
+        if reaction.message.id == 696913039764619274:
+            print('log')
+            if reaction.emoji.id == 565007889207656458:
+                child = discord.utils.get(user.guild.roles, id=696564684026806282)
+                await user.add_roles(child, atomic=True)
+            elif reaction.emoji.id == 683550277801869312:
+                azoki = discord.utils.get(user.guild.roles, id=696565008758341662)
+                await user.add_roles(azoki, atomic=True)
+            elif reaction.emoji.id == 565007885050970153:
+                dyv = discord.utils.get(user.guild.roles, id=696564911035383929)
+                await user.add_roles(dyv, atomic=True)
+
+    @commands.Cog.listener()
+    async def on_reaction_remove(self, reaction, user):
+        if reaction.message.id == 696913039764619274:
+            if reaction.emoji.id == 565007889207656458:
+                child = discord.utils.get(user.guild.roles, id=696564684026806282)
+                await user.remove_roles(child, atomic=True)
+            elif reaction.emoji.id == 683550277801869312:
+                azoki = discord.utils.get(user.guild.roles, id=696565008758341662)
+                await user.remove_roles(azoki, atomic=True)
+            elif reaction.emoji.id == 565007885050970153:
+                dyv = discord.utils.get(user.guild.roles, id=696564911035383929)
+                await user.remove_roles(dyv, atomic=True)
+
+    """
+    @commands.Cog.listener()
+    async def on_member_update(self, before, after):
+        roles = []
+        azoki = discord.utils.get(before.guild.roles, id=696565008758341662)
+        child = discord.utils.get(before.guild.roles, id=696564684026806282)
+        dyv = discord.utils.get(before.guild.roles, id=696564911035383929)
+        roles.append(azoki)
+        roles.append(child)
+        roles.append(dyv)
+
+        for role in roles:
+            if role in after.roles:
+
+
+        if (dyv and child in after.roles) or (child and azoki in after.roles) or (azoki and dyv in after.roles):
+            await after.remove_roles(dyv)
+            await after.remove_roles(child)
+            await after.remove_roles(azoki)
+            await after.send("Please select one role only")
+    """
+
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    @checks.is_guild(guild=564974738716360724)
+    async def reactions(self, ctx):
+        msg = await ctx.message.channel.fetch_message(696840202630463548)
+        await msg.add_reaction('<:gold:565007889207656458>')
+        await msg.add_reaction('<:BEEG_YOSHI:683550277801869312>')
+        await msg.add_reaction('<:1028_MCgoldenapple:565007885050970153>')
 
 
 def setup(bot):
