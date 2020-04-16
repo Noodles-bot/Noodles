@@ -7,7 +7,6 @@ class MissingPermissions:
 
 
 def is_owner_or_admin():
-
     def predicate(ctx):
 
         if ctx.message.author.guild_permissions.administrator:
@@ -15,6 +14,16 @@ def is_owner_or_admin():
         elif ctx.author.id == 357918459058978816:
             return True
         else:
-            raise MissingPermissions
+            pass
+
+    return commands.check(predicate)
+
+
+def is_guild(guild):
+    def predicate(ctx):
+        if ctx.guild.id == guild:
+            return True
+        else:
+            return False
 
     return commands.check(predicate)
