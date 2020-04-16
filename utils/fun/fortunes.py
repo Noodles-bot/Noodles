@@ -2132,7 +2132,7 @@ fortunes = [
     '\nTo be intoxicated is to feel sophisticated but not be able to say it.\n', '\nTo be is to program.\n',
     '\nTo be overbusy is a witless task.\n        ― Sophocles\n',
     '\nTo be perfect is to have changed often.\n        ― J. H. Newman\n',
-    '\nTo be sure of hitting the target, shoot first, and call whatever you hit the\ntarget.\n        ― Ashleigh Brilliant\n',
+    '\nTo be sure of hitting the member, shoot first, and call whatever you hit the\nmember.\n        ― Ashleigh Brilliant\n',
     '\nTo be wrong all the time is an effort, but some manage it.\n        ― William Feather\n',
     '\nTo be, or what?\n        ― Sylvester Stallone\n',
     '\nTo criticize the incompetent is easy; it is more difficult to criticize the\ncompetent.\n',

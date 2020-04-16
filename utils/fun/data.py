@@ -53,3 +53,5 @@ dumb = ["smol brain",
         "ignoramus",
         "bonehead"
         ]
+
+color = 0xFFA500
