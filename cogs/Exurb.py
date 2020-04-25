@@ -24,7 +24,7 @@ class Exurb(commands.Cog):
         members = self.bot.get_channel(690125363170508906)
         await members.edit(name=f"Sub members: {reddit.subreddit('exurb1a').subscribers}")
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def refresh(self, ctx):
         reddit = praw.Reddit(client_id=client_id,
@@ -49,40 +49,46 @@ class Exurb(commands.Cog):
             return
         if "668213545909092354" == str(message.guild.id):
             role = discord.utils.get(message.guild.roles, id=697717366976675860)
-            if role in message.author.roles:
-                channel = self.bot.get_channel(697721101064732772)
-                embed = discord.Embed(title='Jump link', url=message.jump_url, color=0xFF0000,
-                                      description=message.content, timestamp=message.created_at)
-                embed.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
-                if message.attachments:
-                    embed.set_image(url=message.attachments[0].url)
-                embed.set_footer(text=message.id)
+            try:
+                if role in message.author.roles:
+                    channel = self.bot.get_channel(697721101064732772)
+                    embed = discord.Embed(title='Jump link', url=message.jump_url, color=0xFF0000,
+                                          description=message.content, timestamp=message.created_at)
+                    embed.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
+                    if message.attachments:
+                        embed.set_image(url=message.attachments[0].url)
+                    embed.set_footer(text=message.id)
 
-                msg = await channel.send(embed=embed)
-                await msg.add_reaction('<:check:694305541417336872>')
-                await msg.add_reaction('❌')
-                emoji = ''
-                channel = ''
-                false = discord.Embed(title='Jump link', url=message.jump_url,
-                                      description=message.content,
-                                      color=0xFF0000, timestamp=message.created_at)
-                false.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
-                true = discord.Embed(title='Jump link', url=message.jump_url,
-                                      description=message.content,
-                                      color=0x228B22, timestamp=message.created_at)
-                true.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
-                while True:
-                    if emoji == '<:check:694305541417336872>':
-                        await msg.edit(embed=true)
-                        await msg.clear_reactions()
-                        break
-                    elif emoji == '❌':
-                        await msg.edit(embed=false)
-                        await msg.clear_reactions()
-                        break
-                    res = await self.bot.wait_for('reaction_add')
-                    if not res[1].bot:
-                        emoji = str(res[0].emoji)
+                    msg = await channel.send(embed=embed)
+                    try:
+                        await msg.add_reaction('<:check:694305541417336872>')
+                    except discord.HTTPException:
+                        pass
+                    await msg.add_reaction('❌')
+                    emoji = ''
+                    channel = ''
+                    false = discord.Embed(title='Jump link', url=message.jump_url,
+                                          description=message.content,
+                                          color=0xFF0000, timestamp=message.created_at)
+                    false.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
+                    true = discord.Embed(title='Jump link', url=message.jump_url,
+                                          description=message.content,
+                                          color=0x228B22, timestamp=message.created_at)
+                    true.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
+                    while True:
+                        if emoji == '<:check:694305541417336872>':
+                            await msg.edit(embed=true)
+                            await msg.clear_reactions()
+                            break
+                        elif emoji == '❌':
+                            await msg.edit(embed=false)
+                            await msg.clear_reactions()
+                            break
+                        res = await self.bot.wait_for('reaction_add')
+                        if not res[1].bot:
+                            emoji = str(res[0].emoji)
+            except AttributeError:
+                pass
 
     @commands.group(invoke_without_command=True)
     @commands.has_permissions(manage_roles=True)

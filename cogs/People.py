@@ -26,7 +26,8 @@ class People(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['matthew, Matthew'])
+    @commands.command(aliases=['matthew, Matthew'], hidden=True)
+    @checks.is_guild(guild=665249179496349716)
     async def matt(self, ctx):
         await ctx.send('Matthew is so cute')
 
@@ -89,7 +90,8 @@ class People(commands.Cog):
     async def hug(self, ctx):
         await ctx.send(f'here have a hug! <:PepeHug:675713788967649290>')
 
-    @commands.command(aliases=['link, Link'])
+    @commands.command(aliases=['link, Link'], hidden=True)
+    @checks.is_guild(guild=665249179496349716)
     async def link(self, ctx):
         responses = ["https://www.rageon.com/products/perhaps-7",
                      "https://www.buzzfeed.com/charlemilyg/which-subway-sandwich-are-you-329mf",
@@ -120,7 +122,7 @@ class People(commands.Cog):
             '\n\n:red_circle::blue_circle::red_circle::blue_circle::red_circle::blue_circle::red_circle::blue_circle'
             '::red_circle::blue_circle:')
 
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, aliases=['crisp'])
     @checks.is_guild(guild=665249179496349716)
     async def crispy(self, ctx):
         epicnes = ['I love you all to bits',
@@ -208,7 +210,8 @@ class People(commands.Cog):
     async def noah(self, ctx):
         await ctx.send('Noah is the best')
 
-    @commands.command(aliases=['zombi', 'zomb'])
+    @commands.command(aliases=['zombi', 'zomb'], hidden=True)
+    @checks.is_guild(guild=665249179496349716)
     async def zombital(self, ctx):
         await ctx.send('Life is about one thing, and one thing only. Getting actions on dm.')
 
@@ -226,6 +229,11 @@ class People(commands.Cog):
     @checks.is_guild(guild=665249179496349716)
     async def jack(self, ctx):
         await ctx.send('Dabbing on those Minecraft haters with my british accent ')
+
+    @commands.command(aliases=['marbles', 'marbless', 'soda'], hidden=True)
+    @checks.is_guild(guild=665249179496349716)
+    async def marble(self, ctx):
+        await ctx.send('<@703339033719472161> **Carbonate me mommy**')
 
 
 def setup(bot):

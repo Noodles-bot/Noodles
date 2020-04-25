@@ -1,12 +1,10 @@
 import aiohttp
-import requests
 import random
-
 import discord
 from discord.ext import commands
 
 from utils.fun.fortunes import fortunes
-from utils.fun.data import fight_results
+from utils.fun.data import fight_results, insults
 
 session = aiohttp.ClientSession()
 
@@ -18,6 +16,7 @@ class Fun(commands.Cog):
 
     @commands.command(name='8ball')
     async def _8ball(self, ctx, *, question):
+        """Gives the wisest answers"""
         responses = ["It is certain.",
                      "It is decidedly so.",
                      "Without a doubt.",
@@ -41,16 +40,17 @@ class Fun(commands.Cog):
                      "You're gay"]
         await ctx.send(f'Question: {question}\nAnswer: {random.choice(responses)}')
 
-    @commands.command()
+    @commands.command(hidden=True)
     async def french(self, ctx):
         await ctx.send("French horn do be playing the french horn doe :postal_horn:")
 
-    @commands.command()
+    @commands.command(hidden=True)
     async def doot(self, ctx):
         await ctx.send('<@420788676516249601> <:doot_doot:673397860427104288> <:doot_doot:673397860427104288>')
 
     @commands.command(aliases=['flip'])
     async def coinflip(self, ctx):
+        """Flips a coin"""
         coin = random.randrange(2)
         if coin == 0:
             msg = 'The coin has landed on Tails!!'
@@ -61,6 +61,7 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def fight(self, ctx, user: discord.Member = None, *, weapon: str = None):
+        """Fight a user"""
         if user is None or user == ctx.author:
             await ctx.send(
                 f"{ctx.author.mention} fought themselves but only ended up in a mental institution, <:kek:665322685034922017>")
@@ -74,6 +75,7 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=['catto'])
     async def cat(self, ctx):
+        """Sends a cute catto"""
         async with session.get('https://aws.random.cat/meow') as resp:
             data = await resp.json()
         embed = discord.Embed(title='Meow!!', color=0xFFA500)
@@ -83,6 +85,7 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=['doggo'])
     async def dog(self, ctx):
+        """Sends a cute doggo"""
         async with session.get('https://random.dog/woof.json') as resp:
             data = await resp.json()
         embed = discord.Embed(title='Woof!! Woof!!', color=0xFFA500)
@@ -92,8 +95,28 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def fortune(self, ctx):
+        """Gives a random fortune"""
         await ctx.send(f'```{random.choice(fortunes)}```')
 
+    @commands.command()
+    async def insult(self, ctx, user: discord.Member = None):
+        """Insults you or a user"""
+        member = user or ctx.author
+        i = random.randint(0, 1)
+        if i == 0:
+            await ctx.send(random.choice(insults))
+        else:
+            async with session.get(f'https://insult.mattbas.org/api/insult.json?who={member.name}') as resp:
+                data = await resp.json(content_type=None)
+            await ctx.send(data['insult'])
+
+    @commands.command(aliases=['comp'])
+    async def compliment(self, ctx, user: discord.Member = None):
+        """Gives a user or you a compliment"""
+        member = user or ctx.author
+        async with session.get('https://complimentr.com/api') as data:
+            data = await data.json(content_type=None)
+        await ctx.send(member.name + ", " + data['compliment'].capitalize())
     # TODO: Add tic tac toe
 
 

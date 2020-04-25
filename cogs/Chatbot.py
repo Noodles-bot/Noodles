@@ -11,7 +11,7 @@ class Chatbot(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(hidden=True)
     async def ask(self, ctx, *, question: str):
         response = await CleverBot.ask(question, ctx.author.id)
         await ctx.send(response.text)

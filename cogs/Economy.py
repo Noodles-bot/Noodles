@@ -6,7 +6,6 @@ import html
 
 from discord.ext import commands
 from utils.fun.data import *
-from utils.tools import get_money
 
 
 def coinflip():
@@ -21,6 +20,15 @@ class Economy(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+    async def get_money(self, ctx):
+        if not ctx.guild:
+            return ":ramen:"
+
+        money = await self.bot.pg_con.fetch("SELECT money_name, guild_id FROM guild_settings WHERE guild_id = $1",
+                                            str(ctx.guild.id))
+        money = money[0][0]
+        return money
 
     @commands.Cog.listener(name='on_message')
     async def db_insert(self, ctx):
@@ -45,15 +53,18 @@ class Economy(commands.Cog):
 
     @commands.command(aliases=['bal'])
     async def balance(self, ctx, member: discord.Member = None):
-        money_name = await get_money(ctx=ctx)
+        """Gets your balance or someone else's"""
+        money_name = await self.get_money(ctx=ctx)
         member = ctx.author if not member else member
         author_id = str(member.id)
         sql = self.bot.get_cog('Sql')
         if sql is None:
             print("SQL is none")
-        test = await self.bot.pg_con.fetch("SELECT bal, bank FROM users WHERE user_id = $1 AND NOT guild_id = $2", str(ctx.author.id), str(ctx.guild.id))
+        test = await self.bot.pg_con.fetch("SELECT bal, bank FROM users WHERE user_id = $1 AND NOT guild_id = $2",
+                                           str(ctx.author.id), str(ctx.guild.id))
         if test:
-            await self.bot.pg_con.execute("UPDATE users SET bal = $1, bank = $2 WHERE user_id = $3 AND guild_id = $4", test[0][0], test[0][1], str(ctx.author.id), str(ctx.guild.id))
+            await self.bot.pg_con.execute("UPDATE users SET bal = $1, bank = $2 WHERE user_id = $3 AND guild_id = $4",
+                                          test[0][0], test[0][1], str(ctx.author.id), str(ctx.guild.id))
         result = await sql.get_balance(author_id=author_id)
         bank = await sql.get_bank(author_id=author_id)
         embed = discord.Embed(title='Balance',
@@ -64,7 +75,8 @@ class Economy(commands.Cog):
 
     @commands.command(aliases=['give'])
     async def transfer(self, ctx, rec: discord.Member, amount):
-        money_name = await get_money(ctx=ctx)
+        """Gives the user money"""
+        money_name = await self.get_money(ctx=ctx)
         author_id = str(ctx.author.id)
         rec_id = str(rec.id)
         sql = self.bot.get_cog('Sql')
@@ -91,7 +103,7 @@ class Economy(commands.Cog):
         await ctx.send(
             f"Successfully transferred {amount} {money_name} to {ctx.guild.get_member(int(rec_id)).display_name}")
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def execute(self, ctx, *, command):
         await self.bot.pg_con.execute(command)
@@ -99,7 +111,8 @@ class Economy(commands.Cog):
 
     @commands.command()
     async def rich(self, ctx):
-        money_name = await get_money(ctx=ctx)
+        """Gets the richest users in the guild"""
+        money_name = await self.get_money(ctx=ctx)
         guild_id = str(ctx.guild.id)
 
         result = await self.bot.pg_con.fetch(
@@ -125,15 +138,11 @@ class Economy(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['db'])
-    async def database(self, ctx):
-        sql = self.bot.get_cog('Sql')
-        await ctx.send(await sql.get_user(author_id=str(ctx.author.id), guild_id=str(ctx.guild.id)))
-
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def search(self, ctx):
-        money_name = await get_money(ctx=ctx)
+        """Searches in a random place for money"""
+        money_name = await self.get_money(ctx=ctx)
         sql = self.bot.get_cog('Sql')
         places = ["Ducc's pond", "the dumpster", "your pocket", "the epic games store", "your shoe"]
         amt = random.randint(1, 150)
@@ -147,7 +156,8 @@ class Economy(commands.Cog):
 
     @commands.command(aliases=['dep'])
     async def deposit(self, ctx, amount: str):
-        money_name = await get_money(ctx=ctx)
+        """Deposits you money to the bank"""
+        money_name = await self.get_money(ctx=ctx)
         sql = self.bot.get_cog('Sql')
         if sql is not None:
             user1 = await sql.get_user(author_id=str(ctx.author.id), guild_id=str(ctx.guild.id))
@@ -168,7 +178,8 @@ class Economy(commands.Cog):
 
     @commands.command(aliases=['with'])
     async def withdraw(self, ctx, amount):
-        money_name = await get_money(ctx=ctx)
+        """Withdraws your money from the bank"""
+        money_name = await self.get_money(ctx=ctx)
         sql = self.bot.get_cog('Sql')
         if sql is not None:
             user1 = await sql.get_user(author_id=str(ctx.author.id), guild_id=str(ctx.guild.id))
@@ -193,7 +204,8 @@ class Economy(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 60, commands.BucketType.user)
     async def steal(self, ctx, member: discord.Member):
-        money_name = await get_money(ctx=ctx)
+        """Steals money from a user, but be aware you can fail"""
+        money_name = await self.get_money(ctx=ctx)
         sql = self.bot.get_cog('Sql')
         if member == ctx.author:
             await ctx.send("You can't steal from yourself pathetic piece of shit")
@@ -220,7 +232,8 @@ class Economy(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def beg(self, ctx):
-        money_name = await get_money(ctx=ctx)
+        """Begs a random user in the server for money"""
+        money_name = await self.get_money(ctx=ctx)
         sql = self.bot.get_cog('Sql')
         if sql is not None:
             people = [f.display_name for f in ctx.guild.members]
@@ -241,7 +254,8 @@ class Economy(commands.Cog):
     @commands.command(aliases=['pm'])
     @commands.cooldown(1, 20, commands.BucketType.user)
     async def postmeme(self, ctx):
-        money_name = await get_money(ctx=ctx)
+        """Posts a meme to the web, you need an laptop for this"""
+        money_name = await self.get_money(ctx=ctx)
         sql = self.bot.get_cog('Sql')
         if sql is not None:
             has_pc = await self.bot.pg_con.fetch("SELECT laptop FROM inventory WHERE user_id = $1", str(ctx.author.id))
@@ -273,8 +287,9 @@ class Economy(commands.Cog):
                 await ctx.send(
                     f"Your meme got **{votes}** upvotes, {random.choice(meme)}. You got **{cash}** {money_name}")
 
-    @commands.command()
+    @commands.command(aliases=['store'])
     async def shop(self, ctx):
+        """Shows all the items in the shop"""
         i = []
         result = await self.bot.pg_con.fetch("SELECT * FROM shop")
         embed = discord.Embed(title='Shop', color=color)
@@ -295,6 +310,7 @@ class Economy(commands.Cog):
 
     @commands.command()
     async def buy(self, ctx, item: str):
+        """Buys an item from the store"""
         sql = self.bot.get_cog('Sql')
         if sql is not None:
 
@@ -319,6 +335,7 @@ class Economy(commands.Cog):
 
     @commands.command(aliases=['inv'])
     async def inventory(self, ctx):
+        """Gets the items in your inventory"""
         items = ['cookie', 'laptop', 'noodles', 'guitar', 'french']  # TODO: Make this automatic
         sql = self.bot.get_cog('Sql')
         if sql is not None:
@@ -337,6 +354,7 @@ class Economy(commands.Cog):
 
     @commands.command()
     async def use(self, ctx, item: str):
+        """Uses an item"""
         sql = self.bot.get_cog('Sql')
         if sql is not None:
             if item.lower() == 'cookie':
@@ -359,7 +377,7 @@ class Economy(commands.Cog):
             else:
                 await ctx.send("That's not an item smh my head")
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def addshop(self, ctx, item_name, item_rarity: int, item_price: int, item_id: int, item_type, item_emote):
         await self.bot.pg_con.execute(
@@ -368,11 +386,18 @@ class Economy(commands.Cog):
         await self.bot.pg_con.execute(f"ALTER TABLE inventory ADD {item_name} INT DEFAULT 0 NOT NULL")
         await ctx.send(f"Added {item_name} to shop")
 
-    # TODO: Add instrument system
     @commands.command()
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.guild_only()
+    @commands.is_owner()
+    async def play(self, ctx):
+        i = await self.bot.pg_con.execute("SELECT * WHERE user_id = $1 AND ")
+        pass
+
+    @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def gamble(self, ctx, money):
-        money_name = await get_money(ctx=ctx)
+        """Gambles all your money away"""
+        money_name = await self.get_money(ctx=ctx)
         sql = self.bot.get_cog('Sql')
         if sql is not None:
             user1 = await sql.get_user(author_id=str(ctx.author.id), guild_id=str(ctx.guild.id))
@@ -415,7 +440,8 @@ class Economy(commands.Cog):
 
     @commands.command(aliases=['slot'])
     async def slots(self, ctx, money):
-        money_name = await get_money(ctx=ctx)
+        """Slot all your money"""
+        money_name = await self.get_money(ctx=ctx)
         sql = self.bot.get_cog('Sql')
         if sql is not None:
             if money.lower() == 'all':
@@ -468,17 +494,11 @@ class Economy(commands.Cog):
             else:
                 await msg.edit(embed=lose)
 
-    @commands.command()
-    async def test(self, ctx):
-        sql = self.bot.get_cog('Sql')
-        if sql is not None:
-            bank = await sql.get_bank_all(guild_id=str(ctx.guild.id))
-            await ctx.send(bank[0])
-
     @commands.command(aliases=['quiz'])
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def trivia(self, ctx):
-        money_name = await get_money(ctx=ctx)
+        """Test your big brain"""
+        money_name = await self.get_money(ctx=ctx)
         sql = self.bot.get_cog('Sql')
         if sql is not None:
             worth = {
@@ -524,11 +544,12 @@ class Economy(commands.Cog):
                                   author_id=str(ctx.author.id))
             else:
                 await ctx.send(
-                    f"No {random.choice(dumb)}, the answer was: `{question['results'][0]['correct_answer'].capitalize()}`")
+                    f"No {random.choice(dumb)}, the answer was: `{html.unescape(question['results'][0]['correct_answer'].capitalize())}`")
 
     @commands.command()
     @commands.cooldown(1, 86400, commands.BucketType.user)
     async def daily(self, ctx):
+        """Get your daily cash"""
         if ctx.author == self.bot.user:
             return
 
@@ -547,20 +568,22 @@ class Economy(commands.Cog):
                                       user['bal'] + 500,
                                       author_id)
 
-        await ctx.send('Added 500 Ducc dollars')
+        await ctx.send(f'Added 500 {await self.get_money(ctx=ctx)}')
 
     @commands.group(name='waifu')
     @commands.guild_only()
     async def waifu(self, ctx):
-        money_name = await get_money(ctx=ctx)
+        """This command works with subcommands check help waifu for more info"""
+        money_name = await self.get_money(ctx=ctx)
         pass
 
     @waifu.command()
     @commands.guild_only()
     async def claim(self, ctx, user: discord.Member, amount: int):
+        """Claim a user"""
         sql = self.bot.get_cog('Sql')
         price = await self.get_price(user_id=str(user.id))
-        money_name = await get_money(ctx=ctx)
+        money_name = await self.get_money(ctx=ctx)
         bal = await sql.get_balance(author_id=str(ctx.author.id))
         if user.id == ctx.author.id:
             await ctx.send("You can't claim yourself smh")
@@ -583,6 +606,7 @@ class Economy(commands.Cog):
     @waifu.command(aliases=['stats'])
     @commands.guild_only()
     async def about(self, ctx, member: discord.Member = None):
+        """Get info about waifu"""
         waifus = []
         member = member or ctx.author
         claimed = await self.claimed_by(user_id=str(member.id))

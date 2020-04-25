@@ -9,7 +9,7 @@ import random
 from discord.ext import commands
 from datetime import datetime
 
-from utils.fun.data import color
+from utils.fun.data import color, emotes
 from utils.secret import *
 
 session = aiohttp.ClientSession()
@@ -25,15 +25,15 @@ class Reddit(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.reddit = praw.Reddit(client_id=client_id,
+                                  client_secret=client_secret,
+                                  username=username,
+                                  password=password,
+                                  user_agent=user_agent)
 
     @commands.command()
     async def membercount(self, ctx, subreddit):
-        reddit = praw.Reddit(client_id=client_id,
-                             client_secret=client_secret,
-                             username=username,
-                             password=password,
-                             user_agent=user_agent)
-        await ctx.send(reddit.subreddit(subreddit).subscribers)
+        await ctx.send(self.reddit.subreddit(subreddit).subscribers)
 
     @commands.command()
     async def meme(self, ctx):
@@ -43,10 +43,9 @@ class Reddit(commands.Cog):
                              username=username,
                              password=password,
                              user_agent=user_agent)
-        for submission in reddit.subreddit('DankMemes+Memes+MemeEconomy').top('week'):
+        for submission in self.reddit.subreddit('DankMemes+Memes+MemeEconomy').top('week'):
             if not submission.stickied:
                 meme.append(submission)
-        submission = random.choice(meme)
         embed = discord.Embed(title=submission.author.name, url=f'https://www.reddit.com{submission.permalink}',
                               color=0xFFA500)
         embed.set_image(url=submission.url)
@@ -58,25 +57,22 @@ class Reddit(commands.Cog):
     async def modq(self, ctx, subreddit=None):
         modcomment = []
         modsub = []
-        reddit = praw.Reddit(client_id=client_id,
-                             client_secret=client_secret,
-                             username=username,
-                             password=password,
-                             user_agent=user_agent)
         async with ctx.typing():
             if subreddit is None:
-                for item in reddit.subreddit('mod').mod.modqueue(only='comments', limit=None):
+                for item in self.reddit.subreddit('mod').mod.modqueue(only='comments', limit=None):
                     modcomment.append(item)
-                for item in reddit.subreddit('mod').mod.modqueue(only='submissions', limit=None):
+                print(modcomment)
+                for item in self.reddit.subreddit('mod').mod.modqueue(only='submissions', limit=None):
                     modsub.append(item)
+                print(modsub)
                 embed = discord.Embed(title='',
                                       description=f'Total Items: **{len(modcomment) + len(modsub)}**\n\nSubmissions: **{len(modsub)}**\nComments: **{len(modcomment)}**',
                                       color=0xFFA500)
                 await ctx.send(embed=embed)
             else:
-                for item in reddit.subreddit(subreddit).mod.modqueue(only='comments', limit=None):
+                for item in self.reddit.subreddit(subreddit).mod.modqueue(only='comments', limit=None):
                     modcomment.append(item)
-                for item in reddit.subreddit(subreddit).mod.modqueue(only='submissions', limit=None):
+                for item in self.reddit.subreddit(subreddit).mod.modqueue(only='submissions', limit=None):
                     modsub.append(item)
                 embed = discord.Embed(title='',
                                       description=f'Total Items: **{len(modcomment) + len(modsub)}**\n\nSubmissions: **{len(modsub)}**\nComments: **{len(modcomment)}**',
@@ -94,15 +90,10 @@ class Reddit(commands.Cog):
                 return
             user = u[0][1]
         actions = []
-        reddit = praw.Reddit(client_id=client_id,
-                             client_secret=client_secret,
-                             username=username,
-                             password=password,
-                             user_agent=user_agent)
         b = discord.Embed(title='Loading....', color=color)
         b.set_image(url='https://acegif.com/wp-content/uploads/cat-typing-16.gif')
         msg = await ctx.send(embed=b)
-        for log in reddit.subreddit('specialsnowflake').mod.log(limit=200000000, mod=user):
+        for log in self.reddit.subreddit('specialsnowflake').mod.log(limit=200000000, mod=user):
             if datetime.utcfromtimestamp(log.created_utc).month == datetime.now().month:
                 actions.append(log.action)
             else:
@@ -125,12 +116,7 @@ class Reddit(commands.Cog):
                 await ctx.send(f"Unable to locate user please use {ctx.prefix}verify or specify your username")
                 return
             user = u[0][1]
-        reddit = praw.Reddit(client_id=client_id,
-                             client_secret=client_secret,
-                             username=username,
-                             password=password,
-                             user_agent=user_agent)
-        user = reddit.redditor(user)
+        user = self.reddit.redditor(user)
         b = discord.Embed(title='Loading....', color=color)
         b.set_image(url='https://acegif.com/wp-content/uploads/cat-typing-16.gif')
         msg = await ctx.send(embed=b)
@@ -152,13 +138,8 @@ class Reddit(commands.Cog):
         msg = await ctx.send(embed=b)
         i = time.perf_counter()
         mod = []
-        reddit = praw.Reddit(client_id=client_id,
-                             client_secret=client_secret,
-                             username=username,
-                             password=password,
-                             user_agent=user_agent)
         try:
-            user = reddit.redditor(user)
+            user = self.reddit.redditor(user)
             total = 0
             for index, sub in enumerate(user.moderated(), 1):
                 if index == 20:
@@ -182,7 +163,7 @@ class Reddit(commands.Cog):
                 embed.add_field(name=f'Top 0 moderated subreddits', value='None', inline=False)
                 i2 = time.perf_counter()
                 embed.set_footer(text=f"Executed in: {round((i2 - i) / 1000, 2)}s")
-                await msg.edit(embed=embed)  # TODO: Finish this
+                await msg.edit(embed=embed)
 
         except prawcore.exceptions.NotFound:
             embed = discord.Embed(title='400', description='User not found', color=color)
@@ -191,16 +172,11 @@ class Reddit(commands.Cog):
     @commands.command()
     async def verify(self, ctx):
         await ctx.author.send("What's your reddit username?")
-        reddit = praw.Reddit(client_id=client_id,
-                             client_secret=client_secret,
-                             username=username,
-                             password=password,
-                             user_agent=user_agent)
         m = await self.bot.wait_for('message', check=lambda msg: msg.author == ctx.author, timeout=10.0)
         letters = string.ascii_lowercase
         verify = ''.join([random.choice(letters) for i in range(6)])
         ig = m.content.lower().replace('u/', '')
-        reddit.redditor(ig).message('Verify', f'Your verification is:\n\n **{verify}**\n\nPlease reply in dm')
+        self.reddit.redditor(ig).message('Verify', f'Your verification is:\n\n **{verify}**\n\nPlease reply in dm')
         await ctx.author.send(f"Succesfully send verification to {m.content}")
         r = await self.bot.wait_for('message', check=lambda msg: msg.author == ctx.author)
         if r.content.lower() == verify.lower():
@@ -216,37 +192,49 @@ class Reddit(commands.Cog):
             await ctx.author.send("Incorrect verification")
             return
 
-    """
     @commands.command()
-    async def modstats(self, ctx, user):
+    async def teststats(self, ctx, user=None):
+
         b = discord.Embed(title='Loading....', color=color)
         b.set_image(url='https://acegif.com/wp-content/uploads/cat-typing-16.gif')
-
         msg = await ctx.send(embed=b)
-        p = requests.get(f'https://www.reddit.com/user/{user}/moderated_subreddits/.json')
-        p = p.json()
-        await asyncio.sleep(1.2)
-        profile = requests.get(f'https://www.reddit.com/user/{user}/about.json?raw_json=1')
-        profile = profile.json()
-        total = 0
-        print(p)
-        for sub in p['data']:
-            total += sub['subscribers']
-        total_modded = '{:,}'.format(total)
-        top_20 = []
-        for sub in p['data']:
-            if len(top_20) == 15:
-                break
-            top_20.append(f'{sub["sr_display_name_prefixed"]} ({sub["subscribers"]})')
-        embed = discord.Embed(
-            title='',
-            color=color)
-        embed.set_author(name=f'u/{user}', url=f'https://www.reddit.com/user/{user}')
-        embed.set_thumbnail(url=profile['data']['icon_img'])
-        embed.add_field(name='Total Subscribers', value=total_modded)
-        embed.add_field(name=f'Top {len(top_20)} Moderated Subreddits', value='\n'.join(top_20), inline=False)
-        await ctx.send(embed=embed)
-    """
+
+        if user is None:
+            u = await self.bot.pg_con.fetch("SELECT user_id, username FROM reddit WHERE user_id = $1",
+                                            str(ctx.author.id))
+            if not u:
+                await ctx.send(f"Unable to locate user please use {ctx.prefix}verify or specify your username")
+                return
+            user = u[0][1]
+
+        async with session.get(url=f'https://www.reddit.com/user/{user}/trophies/.json') as resp:
+            troph = await resp.json()
+        async with session.get(f'https://www.reddit.com/user/{user}/about/.json') as resp:
+            about = await resp.json()
+        trophies = []
+
+        for trophy in troph['data']['trophies']:
+            try:
+                yes = trophy['data']['name'].lower()
+                trophies.append(emotes[yes])
+            except KeyError:
+                print(trophy['data']['name'])
+
+        icon = about['data']['icon_img']
+        icon = icon.split('?')[0]
+        banner = about['data']['subreddit']['banner_img']
+        banner = banner.split('?')[0]
+        embed = discord.Embed(title=about['data']['subreddit']['title'], color=color)
+        embed.set_thumbnail(url=icon)
+        embed.add_field(name='**Trophies**', value=''.join(sorted(set(trophies))), inline=False)
+        embed.set_author(name=about['data']['subreddit']['display_name_prefixed'],
+                         url=f'https://www.reddit.com{about["data"]["subreddit"]["url"]}',
+                         icon_url=banner)
+        embed.add_field(name='**Karma**',
+                        value=f'Total: **{about["data"]["link_karma"] + about["data"]["comment_karma"]:,}**\n'
+                              f'Link: **{about["data"]["link_karma"]:,}**\n'
+                              f'Comment: **{about["data"]["comment_karma"]:,}**', inline=True)
+        await msg.edit(embed=embed)
 
 
 def setup(bot):
