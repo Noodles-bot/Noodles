@@ -1,44 +1,120 @@
+"""
+    MIT License
+    Copyright (c) 2020 Matthew
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+"""
+import asyncio
 import os
-import json
 import discord
 import asyncpg
 import subprocess
 import sys
+
 from datetime import datetime
 from discord.ext import commands
+from utils.secret import *
+
+__version__ = '0.4.11 Alpha'
+
+text = r"""
+ _   _                 _ _          
+| \ | |               | | |         
+|  \| | ___   ___   __| | | ___ ___ 
+| . ` |/ _ \ / _ \ / _` | |/ _ / __|
+| |\  | (_) | (_) | (_| | |  __\__ \
+|_| \_|\___/ \___/ \__,_|_|\___|___/                           
+"""
+logo = r"""
+         |
+         |  /
+         | /
+   .~^(,&|/o.
+  |`-------^|
+  \         /
+   `======='    
+"""
+print(text)
+print(logo)
+
+
+async def create_db_pool():
+    bot.pg_con = await asyncpg.create_pool(database=DATABASE, user=USER, password=PASSWORD)
+
+
+async def cleaner():
+    while True:
+        eshack = await bot.get_guild(564974738716360724)
+        for user in eshack.members:
+            if not user.roles:
+                await user.kick(reason="Inactive")
+        await asyncio.sleep(172800)
+
+
+async def update_status():
+    await bot.wait_until_ready()
+    while not bot.is_closed():
+        await bot.change_presence(status=discord.Status.online,
+                                  activity=discord.Activity(type=discord.ActivityType.watching,
+                                                            name=f'{len(bot.users):,} users'))
+        await asyncio.sleep(30)
+        await bot.change_presence(status=discord.Status.online,
+                                  activity=discord.Activity(type=discord.ActivityType.watching,
+                                                            name=f'{len(bot.guilds):,} guilds'))
+        await asyncio.sleep(30)
+        await bot.change_presence(status=discord.Status.online,
+                                  activity=discord.Activity(type=discord.ActivityType.playing,
+                                                            name=f',help'))
+        await asyncio.sleep(30)
 
 
 async def get_prefix(bot, message):
     if not message.guild:
         return commands.when_mentioned_or(",")(bot, message)
 
-    with open("prefixes.json", 'r') as f:
-        prefixes = json.load(f)
+    prefixes = await bot.pg_con.fetch("SELECT prefix, guild_id FROM guild_settings WHERE guild_id = $1",
+                                      str(message.guild.id))
 
-    if str(message.guild.id) not in prefixes:
-        return commands.when_mentioned_or(",")(bot, message)
+    if not prefixes:
+        await bot.pg_con.execute("INSERT INTO guild_settings (guild_id) VALUES ($1)", str(message.guild.id))
 
-    prefix = prefixes[str(message.guild.id)]
+    prefixes = await bot.pg_con.fetch("SELECT prefix, guild_id FROM guild_settings WHERE guild_id = $1",
+                                      str(message.guild.id))
+    prefix = prefixes[0][0]
     return commands.when_mentioned_or(prefix)(bot, message)
 
 
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True)
 
-bot.remove_command('help')
+# bot.remove_command('help')
 
-
-async def create_db_pool():
-    bot.pg_con = await asyncpg.create_pool(database="Matt-O-Bot", user="postgres", password="Jupiter22")
+bot.launch_time = datetime.utcnow()
 
 
 @bot.event
 async def on_ready():
-    await bot.change_presence(status=discord.Status.online,
-                              activity=discord.Activity(type=discord.ActivityType.watching,
-                                                        name=f'{len(bot.users):,} users'))
-    bot.launch_time = datetime.utcnow()
-    print('Bot is online.')
-    print(f'Ping {round(bot.latency * 1000, 3)}ms')
+    print('Logged in as')
+    print(f'Bot-Name: {bot.user}')
+    print(f'Bot-ID: {bot.user.id}')
+    print(f'Discord.py Version: {discord.__version__}')
+    print(f'Bot Version: {__version__}')
+    bot.AppInfo = await bot.application_info()
+    print(f'Owner: {bot.AppInfo.owner}')
+    print(f'Latency: {round(bot.latency * 1000, 3)}ms')
+    print('------')
 
 
 @bot.command(aliases=['up'])
@@ -51,7 +127,7 @@ async def uptime(ctx):
     await ctx.send(embed=embed)
 
 
-@commands.command()
+@commands.command(hidden=True)
 @commands.is_owner()
 async def reboot(ctx):
     await ctx.send('Rebooting...')
@@ -59,7 +135,7 @@ async def reboot(ctx):
     subprocess.call([sys.executable, "Noodles.py"])
 
 
-@bot.command()
+@bot.command(hidden=True)
 @commands.is_owner()
 async def reload(ctx, cog=None):
     cog = cog.lower()
@@ -87,7 +163,7 @@ async def reload(ctx, cog=None):
     await ctx.send(f'Successfully reloaded {cog1}')
 
 
-@bot.command()
+@bot.command(hidden=True)
 @commands.is_owner()
 async def unload(ctx, cog=None):
     cog = cog.lower()
@@ -105,7 +181,7 @@ async def unload(ctx, cog=None):
             bot.unload_extension(f"cogs.{cog}")
             cog1 = f'cog `{cog}`'
         except Exception as error:
-            print(f"{cog} can't be reloaded")
+            print(f"{cog} can't be unloaded")
             await ctx.message.clear_reactions()
             raise error
 
@@ -113,7 +189,7 @@ async def unload(ctx, cog=None):
     await ctx.send(f"Successfully unloaded {cog1}")
 
 
-@bot.command()
+@bot.command(hidden=True)
 @commands.is_owner()
 async def load(ctx, cog=None):
     cog = cog.lower()
@@ -132,7 +208,7 @@ async def load(ctx, cog=None):
             cog1 = f'cog `{cog}`'
         except Exception as error:
             await ctx.message.clear_reactions()
-            await ctx.send(f"{cog} can't be reloaded")
+            await ctx.send(f"{cog} can't be loaded")
             raise error
 
     await ctx.message.clear_reactions()
@@ -148,5 +224,6 @@ for cog in os.listdir(".\\cogs"):
             print(f"{cog} can not be loaded")
             raise e
 
+bot.loop.create_task(update_status())
 bot.loop.run_until_complete(create_db_pool())
 bot.run(TOKEN)
