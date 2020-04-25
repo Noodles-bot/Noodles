@@ -1,5 +1,7 @@
 import discord
-import json
+import asyncio
+import asyncpg
+from utils.secret import *
 
 
 def embedinator(author, color, message, *, formatUser=False, useNick=False):
@@ -14,15 +16,6 @@ def embedinator(author, color, message, *, formatUser=False, useNick=False):
     return embed
 
 
-async def get_money(ctx):
-    if not ctx.guild:
-        return ":ramen:"
 
-    with open("C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/utils/json/money.json", 'r') as f:
-        money = json.load(f)
 
-    if str(ctx.guild.id) not in money:
-        return ':ramen:'
 
-    money = money[str(ctx.guild.id)]
-    return money
