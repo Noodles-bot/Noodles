@@ -90,5 +90,6 @@ class Events(commands.Cog):
                     emoji = str(res[0].emoji)
                     await ctx.message.remove_reaction(res[0].emoji, res[1])
 
+
 def setup(bot):
     bot.add_cog(Events(bot))
