@@ -52,7 +52,8 @@ print(logo)
 
 
 async def create_db_pool():
-    bot.pg_con = await asyncpg.create_pool(dsn="postgres://zsqtcfcp:ePAhyuUmXR8c7GEwP-Xxjv2xYoaHgrKE@drona.db.elephantsql.com:5432/zsqtcfcp")
+    bot.pg_con = await asyncpg.create_pool(dsn="postgres://zsqtcfcp:ePAhyuUmXR8c7GEwP-Xxjv2xYoaHgrKE@drona.db.elephantsql.com:5432/zsqtcfcp",
+                                          min_size=1, max_size=5)
 
 
 async def cleaner():
