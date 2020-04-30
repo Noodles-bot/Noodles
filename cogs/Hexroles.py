@@ -48,5 +48,6 @@ class Hexroles(commands.Cog):
         await ctx.channel.send('Added role')
     """
 
+
 def setup(bot):
     bot.add_cog(Hexroles(bot))
