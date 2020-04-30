@@ -12,6 +12,7 @@ infoimg2.png
 prefixes.json
 utils/noodles.bat
 utils/remote/
+.idea
 cogs/__pycache__/Economy.cpython-38.pyc
 cogs/__pycache__/Meta.cpython-38.pyc
 cogs/__pycache__/Star.cpython-38.pyc
