@@ -207,6 +207,5 @@ for cog in os.listdir(r"./cogs"):
             print(f"{cog} can not be loaded")
             raise e
 
-bot.loop.create_task(update_status())
 bot.loop.run_until_complete(create_db_pool())
 bot.run(TOKEN)
