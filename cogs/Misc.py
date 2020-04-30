@@ -2,7 +2,6 @@ import codecs
 import json
 import pathlib
 import time
-import psutil
 import datetime
 import discord
 import os
@@ -156,36 +155,6 @@ class Misc(commands.Cog):
         await vote.add_reaction('<:Perhaps:668675600940138516>')
         await ctx.message.delete()
 
-    @commands.command()
-    @commands.is_owner()
-    async def cpu(self, ctx):
-        list = []
-        usage = psutil.cpu_percent(interval=1, percpu=True)
-        for index, value in enumerate(usage, 1):
-            list.append(f'**Thread {index}**: {value}%')
-
-        embed = discord.Embed(title='CPU info', color=color)
-        embed.add_field(name='Main info:',
-                        value=f'**CPU cores: **{psutil.cpu_count(logical=False)}\n**CPU threads: **{psutil.cpu_count()}\n',
-                        inline=False)
-        embed.add_field(name='CPU usage:',
-                        value=f'**Average usage: **{psutil.cpu_percent(interval=1)}%\n\n' + '\n'.join(list),
-                        inline=False)
-
-        await ctx.send(embed=embed)
-
-    @commands.command()
-    @commands.is_owner()
-    async def ram(self, ctx):
-        embed = discord.Embed(title='RAM info', color=color)
-        embed.add_field(name='Main info:',
-                        value=f'**Total RAM: **{round(psutil.virtual_memory().total / 1000000000, 2)}GB\n**Frequency: **3200Mhz',
-                        inline=False)
-        embed.add_field(name='Usage:',
-                        value=f'**Usage: **{psutil.virtual_memory().percent}%\n**Available: **{round(psutil.virtual_memory().available / 1000000000, 2)}GB\n**Used: **{round(psutil.virtual_memory().used / 1000000000, 2)}GB',
-                        inline=False)
-        await ctx.send(embed=embed)
-
     @commands.command(aliases=['perms'])
     async def permissions(self, ctx):
         """Gets the permissions for user"""
@@ -242,52 +211,6 @@ class Misc(commands.Cog):
             cogs.append(cog)
         embed = discord.Embed(title=f'Active cogs ({len(cogs) - 1}):', description='```' + '\n'.join(cogs) + '```',
                               color=color)
-        await ctx.send(embed=embed)
-
-    @commands.command()
-    async def info(self, ctx):
-        """Gets info about bot"""
-        total = 0
-        python_files = []
-        for path, subdirs, files in os.walk('.'):
-            for name in files:
-                if name.endswith('.py'):
-                    python_files.append(name)
-                try:
-                    with codecs.open('./' + str(pathlib.PurePath(path, name)),
-                                     'r', 'utf-8') as f:
-                        for i, l in enumerate(f):
-                            if len(l.strip()) != 0 and name.endswith('.py'):
-                                total += 1
-                except:
-                    pass
-        delta_uptime = datetime.utcnow() - self.bot.launch_time
-        hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
-        minutes, seconds = divmod(remainder, 60)
-        days, hours = divmod(hours, 24)
-        embed = discord.Embed(
-            title='',
-            description='',
-            color=color)
-        embed.add_field(
-            name='**Bot Info**',
-            value=
-            f"**Current Uptime: **{days} days, {hours} hours, {minutes} minutes, {seconds} seconds\n"
-            + f"**Total Guilds: **{len(self.bot.guilds)}\n" +
-            f"**Available Emojis: **{len(self.bot.emojis)}\n" +
-            f"**Visible Users: **{len(self.bot.users)}\n" +
-            f"**discord.py Version: **{discord.__version__}\n" +
-            f"**Bot Owner: **{(await self.bot.application_info()).owner.mention}"
-        )
-        embed.add_field(
-            name='_ _',
-            value=
-            f"**Total Commands and Subcommands: **{len(set(self.bot.walk_commands()))}\n"
-            + f"**Total Cogs: **{len(self.bot.cogs)}\n" +
-            f"**Lines of Code: **{total:,}\n" + '**Memory Usage: **' + str(
-                psutil.virtual_memory()[2]) + '%\n' +
-            f'**Cached Messages: **{len(self.bot.cached_messages)}\n' +
-            f'**Number of Files: **{len(python_files)}\n')
         await ctx.send(embed=embed)
 
     @commands.command()
