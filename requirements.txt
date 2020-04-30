@@ -1,7 +1,6 @@
 matplotlib>=3.2.1
 prawcore>=1.0.1
 aiohttp>=3.6.2
-psutil>=5.7.0
 flask>=1.1.2
 requests>=2.23.0
 praw>=6.5.1
