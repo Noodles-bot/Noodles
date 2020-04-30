@@ -451,7 +451,7 @@ class Owner(commands.Cog):
         plt.savefig('stats.png', transparent=True)
 
         plt.close(fig)
-        await ctx.send(file=discord.File('C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/stats.png',
+        await ctx.send(file=discord.File('Noodles/stats.png',
                                          filename='stats.png'))
 
     @commands.command()
