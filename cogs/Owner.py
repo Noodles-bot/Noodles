@@ -396,7 +396,7 @@ class Owner(commands.Cog):
             except discord.HTTPException as e:
                 await ctx.send(f'Unexpected error: `{e}`')
 
-    @commands.command()
+    @commands.command() # test
     @commands.is_owner()
     async def select(self, ctx, code):
         y = await self.bot.pg_con.fetch(code)
