@@ -1,4 +1,6 @@
 import inspect
+import os
+
 import aiohttp
 import discord
 import io
@@ -404,7 +406,7 @@ class Owner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def plot_csv(self, ctx, country=None): # TODO: Fix the data source
+    async def plot_csv(self, ctx, country=None):  # TODO: Fix the data source
         timeline, confirmed, recovered, deaths, active = await get_data(country)
         fig, ax = plt.subplots()
         ax.spines['bottom'].set_visible(False)
@@ -451,6 +453,15 @@ class Owner(commands.Cog):
         plt.close(fig)
         await ctx.send(file=discord.File('C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/stats.png',
                                          filename='stats.png'))
+
+    @commands.command()
+    @commands.is_owner()
+    async def pull(self, ctx):
+        stream = os.popen('git pull https://DankDumpster:Jupiter22yolO@github.com/DankDumpster/Noodles')
+        output = stream.read()
+        await ctx.send('```\n'
+                       f'{output}\n'
+                       f'```')
 
 
 def setup(bot):
