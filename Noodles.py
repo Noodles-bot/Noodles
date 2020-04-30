@@ -64,23 +64,6 @@ async def cleaner():
         await asyncio.sleep(172800)
 
 
-async def update_status():
-    await bot.wait_until_ready()
-    while not bot.is_closed():
-        await bot.change_presence(status=discord.Status.online,
-                                  activity=discord.Activity(type=discord.ActivityType.watching,
-                                                            name=f'{len(bot.users):,} users'))
-        await asyncio.sleep(30)
-        await bot.change_presence(status=discord.Status.online,
-                                  activity=discord.Activity(type=discord.ActivityType.watching,
-                                                            name=f'{len(bot.guilds):,} guilds'))
-        await asyncio.sleep(30)
-        await bot.change_presence(status=discord.Status.online,
-                                  activity=discord.Activity(type=discord.ActivityType.playing,
-                                                            name=f',help'))
-        await asyncio.sleep(30)
-
-
 async def get_prefix(bot, message):
     if not message.guild:
         return commands.when_mentioned_or(",")(bot, message)
