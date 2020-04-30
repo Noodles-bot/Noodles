@@ -413,7 +413,7 @@ class Misc(commands.Cog):
             embed.set_thumbnail(url=self.thumb)
             embed.set_image(url='attachment://stats.png')
             await ctx.send(embed=embed,
-                           file=discord.File('Noodles/stats.png',
+                           file=discord.File('stats.png',
                                              filename='stats.png'))
         else:
             try:
