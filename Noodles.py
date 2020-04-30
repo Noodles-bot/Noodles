@@ -52,7 +52,7 @@ print(logo)
 
 
 async def create_db_pool():
-    bot.pg_con = await asyncpg.create_pool(database=DATABASE, user=USER, password=PASSWORD)
+    bot.pg_con = await asyncpg.create_pool(dsn="postgres://zsqtcfcp:ePAhyuUmXR8c7GEwP-Xxjv2xYoaHgrKE@drona.db.elephantsql.com:5432/zsqtcfcp")
 
 
 async def cleaner():
