@@ -463,6 +463,15 @@ class Owner(commands.Cog):
                        f'{output}\n'
                        f'```')
 
+    @commands.command(aliases=['sh'])
+    @commands.is_owner()
+    async def shell(self, ctx, command: str):
+        stream = os.popen(command)
+        output = stream.read()
+        await ctx.send('```\n'
+                       f'{output}\n'
+                       f'```')
+
 
 def setup(bot):
     bot.add_cog(Owner(bot))
