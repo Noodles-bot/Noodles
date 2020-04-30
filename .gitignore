@@ -1,0 +1,21 @@
+# Created by .ignore support plugin (hsz.mobi)
+utils/secret.py
+utils/__pycache__/
+cogs/__pychache__/
+cogs/Eshack.py
+cogs/Kippi.py
+cogs/Exurb.py
+cogs/__pycache__/Kippi.cpython-38.pyc
+__pycache__/
+Work in progress/
+infoimg2.png
+prefixes.json
+utils/noodles.bat
+utils/remote/
+cogs/__pycache__/Economy.cpython-38.pyc
+cogs/__pycache__/Meta.cpython-38.pyc
+cogs/__pycache__/Star.cpython-38.pyc
+cogs/__pycache__/Waifu.cpython-38.pyc
+cogs/__pycache__/__init__.cpython-38.pyc
+utils/__pycache__/config.cpython-38.pyc
+utils/__pycache__/progress_bar.cpython-38.pyc
