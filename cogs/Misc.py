@@ -179,7 +179,7 @@ class Misc(commands.Cog):
     async def ram(self, ctx):
         embed = discord.Embed(title='RAM info', color=color)
         embed.add_field(name='Main info:',
-                        value=f'**Total RAM: **{round(psutil.virtual_memory().total / 1000000000, 2)}GB\n**Frequency: **3200Mhz',
+                        value=f'**Total RAM: **{round(psutil.virtual_memory().total / 1000000000, 2)}GB\n**Frequency: **Null',
                         inline=False)
         embed.add_field(name='Usage:',
                         value=f'**Usage: **{psutil.virtual_memory().percent}%\n**Available: **{round(psutil.virtual_memory().available / 1000000000, 2)}GB\n**Used: **{round(psutil.virtual_memory().used / 1000000000, 2)}GB',
