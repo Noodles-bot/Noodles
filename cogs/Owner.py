@@ -1,5 +1,7 @@
 import inspect
 import os
+import subprocess
+
 import aiohttp
 import discord
 import io
@@ -171,12 +173,6 @@ class Owner(commands.Cog):
                 await ctx.send("Successfully removed nickname")
         except Exception as err:
             await ctx.send(err)
-
-    @commands.group(invoke_without_command=True)
-    @commands.is_owner()
-    async def todo(self, ctx, *, todo):
-        await self.bot.pg_con.execute("INSERT INTO todo (todo, num, is_pinned) VALUES ($1, $2, FALSE)", todo, 1)
-        await ctx.send("Inserted into the database")
 
     @commands.command(aliases=['setmoney'])
     @checks.is_owner_or_admin()
