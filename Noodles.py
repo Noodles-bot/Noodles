@@ -215,7 +215,7 @@ async def load(ctx, cog=None):
     await ctx.send(f'Successfully loaded {cog1}')
 
 
-for cog in os.listdir("\cogs"):
+for cog in os.listdir(r"\Noodles\cogs"):
     if cog.endswith(".py") and not cog.startswith("_"):
         try:
             cog = f"cogs.{cog.replace('.py', '')}"
