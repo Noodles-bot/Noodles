@@ -141,6 +141,8 @@ class Reddit(commands.Cog):
 
         async with session.get(url=f'https://www.reddit.com/user/{user}/trophies/.json') as resp:
             troph = await resp.json()
+        async with session.get(url=f'https://www.reddit.com/user/{user}/moderated_subreddits/.json') as mod:
+            mod = await mod.json()
         async with session.get(f'https://www.reddit.com/user/{user}/about/.json') as resp:
             about = await resp.json()
         trophies = []
