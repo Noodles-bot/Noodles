@@ -1,13 +1,11 @@
-import string
-import time
-import aiohttp
-import praw
-import prawcore
-import discord
 import random
-
-from discord.ext import commands
+import string
 from datetime import datetime
+
+import aiohttp
+import discord
+import praw
+from discord.ext import commands
 
 from utils.fun.data import color, emotes
 from utils.secret import *
@@ -143,7 +141,6 @@ class Reddit(commands.Cog):
             troph = await resp.json()
         async with session.get(url=f'https://www.reddit.com/user/{user}/moderated_subreddits/.json') as mod:
             mod = await mod.json()
-
         async with session.get(f'https://www.reddit.com/user/{user}/about/.json') as resp:
             about = await resp.json()
         trophies = []
@@ -169,6 +166,12 @@ class Reddit(commands.Cog):
                         value=f'Total: **{about["data"]["link_karma"] + about["data"]["comment_karma"]:,}**\n'
                               f'Link: **{about["data"]["link_karma"]:,}**\n'
                               f'Comment: **{about["data"]["comment_karma"]:,}**', inline=True)
+        if mod:
+            subs = []
+            for sub in mod['data']:
+                subs.append(sub['sr_display_name_prefixed'])
+            embed.add_field(name="**Moderated subreddits",
+                            value=f"\n".join(subs))
         await msg.edit(embed=embed)
 
     @commands.command()
