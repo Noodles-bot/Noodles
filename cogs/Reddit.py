@@ -169,7 +169,7 @@ class Reddit(commands.Cog):
         if mod:
             subs = []
             for index, sub in enumerate(mod['data'], 0):
-                subs.append(sub['sr_display_name_prefixed'] + f' ({sub["subscribers"]})')
+                subs.append(sub['sr_display_name_prefixed'] + f' ({sub["subscribers"]:,})')
                 if index > 19:
                     break
             embed.add_field(name=f"**Top 20 moderated subreddits\nTotal:** {len(mod['data'])}",
