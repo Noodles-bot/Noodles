@@ -1,7 +1,7 @@
 Noodles
 =======
 
-.. image:: https://discordapp.com/api/guilds/336642139381301249/embed.png
+.. image:: https://discordapp.com/api/guilds/705526724783505518/embed.png
    :target: https://discord.gg/Kzcr6pE
    :alt: Discord server invite
 
