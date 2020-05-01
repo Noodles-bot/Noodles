@@ -194,12 +194,21 @@ class Meta(commands.Cog):
     @commands.command()
     @checks.is_owner_or_admin()
     async def prefix(self, ctx, *, pre):
-        prefixes = self.bot.pg_con.fetch("SELECT prefix, guild_id FROM guild_settings WHERE guild_id = $1", str(ctx.guild.id))
+        prefixes = self.bot.pg_con.fetch("SELECT prefix, guild_id FROM guild_settings WHERE guild_id = $1",
+                                         str(ctx.guild.id))
         if not prefixes:
             await self.bot.pg_con.execute("INSERT INTO guild_settings (guild_id) VALUES ($1)", str(ctx.guild.id))
-        await self.bot.pg_con.execute("UPDATE guild_settings SET prefix = $1 WHERE guild_id = $2", pre, str(ctx.guild.id))
+        await self.bot.pg_con.execute("UPDATE guild_settings SET prefix = $1 WHERE guild_id = $2", pre,
+                                      str(ctx.guild.id))
         await ctx.guild.get_member(self.bot.user.id).edit(nick=f'Noodles [{pre}]')
         await ctx.send(f"New Prefix is `{pre}`")
+
+    @commands.command()
+    @commands.is_owner()
+    async def debug_database(self, ctx):
+        m = await ctx.send("Debugging...")
+        await self.bot.pg_con.execute("DELETE FROM waifu WHERE user_id IS NULL OR claimed_id IS NULL OR price IS NULL")
+        await m.edit("Debug complete")
 
 
 def setup(bot):
