@@ -1,4 +1,10 @@
-# Noodles
+Noodles
+=======
+
+.. image:: https://discordapp.com/api/guilds/705526724783505518/embed.png
+   :target: https://discord.gg/Kzcr6pE
+   :alt: Discord server invite
+
 Discord bot made by DankDumpster™#5335 (357918459058978816)
 For self hosting
 Put your token in the noodles.py folder
