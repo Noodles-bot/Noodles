@@ -1,5 +1,4 @@
 import async_cleverbot as ac
-import discord
 from discord.ext import commands
 
 CleverBot = ac.Cleverbot('n.C;AnAo^>%",?6sfq6l')
@@ -16,6 +15,7 @@ class Chatbot(commands.Cog):
         response = await CleverBot.ask(question, ctx.author.id)
         await ctx.send(response.text)
 
+    @commands.guild_only()
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.id == 675542011457044512:
