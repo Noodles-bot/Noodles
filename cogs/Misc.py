@@ -1,22 +1,20 @@
 import codecs
-import json
+import datetime
+import os
 import pathlib
 import time
-import psutil
-import datetime
-import discord
-import os
-import googletrans
-import aiohttp
-
-from PIL import Image, ImageDraw, ImageFont
-from discord.ext import commands
 from datetime import datetime
 
+import aiohttp
+import discord
+import googletrans
+import psutil
+from PIL import Image, ImageDraw, ImageFont
+from discord.ext import commands
+
 from utils import checks
-from utils.tools import embedinator
 from utils.fun.data import color
-from utils.flags import *
+from utils.tools import embedinator
 
 session = aiohttp.ClientSession()
 
@@ -159,17 +157,17 @@ class Misc(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def cpu(self, ctx):
-        list = []
+        cpus = []
         usage = psutil.cpu_percent(interval=1, percpu=True)
         for index, value in enumerate(usage, 1):
-            list.append(f'**Thread {index}**: {value}%')
+            cpus.append(f'**Thread {index}**: {value}%')
 
         embed = discord.Embed(title='CPU info', color=color)
         embed.add_field(name='Main info:',
                         value=f'**CPU cores: **{psutil.cpu_count(logical=False)}\n**CPU threads: **{psutil.cpu_count()}\n',
                         inline=False)
         embed.add_field(name='CPU usage:',
-                        value=f'**Average usage: **{psutil.cpu_percent(interval=1)}%\n\n' + '\n'.join(list),
+                        value=f'**Average usage: **{psutil.cpu_percent(interval=1)}%\n\n' + '\n'.join(cpus),
                         inline=False)
 
         await ctx.send(embed=embed)
@@ -271,23 +269,21 @@ class Misc(commands.Cog):
             color=color)
         embed.add_field(
             name='**Bot Info**',
-            value=
-            f"**Current Uptime: **{days} days, {hours} hours, {minutes} minutes, {seconds} seconds\n"
-            + f"**Total Guilds: **{len(self.bot.guilds)}\n" +
-            f"**Available Emojis: **{len(self.bot.emojis)}\n" +
-            f"**Visible Users: **{len(self.bot.users)}\n" +
-            f"**discord.py Version: **{discord.__version__}\n" +
-            f"**Bot Owner: **{(await self.bot.application_info()).owner.mention}"
+            value=f"**Current Uptime: **{days} days, {hours} hours, {minutes} minutes, {seconds} seconds\n"
+                  + f"**Total Guilds: **{len(self.bot.guilds)}\n" +
+                  f"**Available Emojis: **{len(self.bot.emojis)}\n" +
+                  f"**Visible Users: **{len(self.bot.users)}\n" +
+                  f"**discord.py Version: **{discord.__version__}\n" +
+                  f"**Bot Owner: **{(await self.bot.application_info()).owner.mention}"
         )
         embed.add_field(
             name='_ _',
-            value=
-            f"**Total Commands and Subcommands: **{len(set(self.bot.walk_commands()))}\n"
-            + f"**Total Cogs: **{len(self.bot.cogs)}\n" +
-            f"**Lines of Code: **{total:,}\n" + '**Memory Usage: **' + str(
+            value=f"**Total Commands and Subcommands: **{len(set(self.bot.walk_commands()))}\n"
+                  + f"**Total Cogs: **{len(self.bot.cogs)}\n" +
+                  f"**Lines of Code: **{total:,}\n" + '**Memory Usage: **' + str(
                 psutil.virtual_memory()[2]) + '%\n' +
-            f'**Cached Messages: **{len(self.bot.cached_messages)}\n' +
-            f'**Number of Files: **{len(python_files)}\n')
+                  f'**Cached Messages: **{len(self.bot.cached_messages)}\n' +
+                  f'**Number of Files: **{len(python_files)}\n')
         await ctx.send(embed=embed)
 
     @commands.command()
