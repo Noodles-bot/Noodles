@@ -2,7 +2,7 @@ import codecs
 import datetime
 import os
 import pathlib
-import sys
+import platform
 import time
 from datetime import datetime
 
@@ -289,7 +289,7 @@ class Misc(commands.Cog):
                   f'**Cached Messages: **{len(self.bot.cached_messages)}\n' +
                   f'**Number of Python files: **{len(python_files)}\n'
                   f'**Number of C++ files: **{len(cpp_files)}\n')
-        embed.set_footer(text=sys.version)
+        embed.set_footer(text='Python' + platform.python_version())
         await ctx.send(embed=embed)
 
     @commands.command()
