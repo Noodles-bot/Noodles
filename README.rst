@@ -1,7 +1,8 @@
-# Noodles
+Noodles
+=======
 
-.. image:: https://discordapp.com/api/guilds/336642139381301249/embed.png
-   :target: https://discord.gg/r3sSKJJ
+.. image:: https://discordapp.com/api/guilds/705526724783505518/embed.png
+   :target: https://discord.gg/Kzcr6pE
    :alt: Discord server invite
 
 Discord bot made by DankDumpster™#5335 (357918459058978816)
