@@ -1,10 +1,11 @@
-import discord
-import random
 import asyncio
-import requests
 import html
+import random
 
+import discord
+import requests
 from discord.ext import commands
+
 from utils.fun.data import *
 
 
@@ -311,6 +312,7 @@ class Economy(commands.Cog):
     @commands.command()
     async def buy(self, ctx, item: str):
         """Buys an item from the store"""
+        money_name = await self.get_money(ctx=ctx)
         sql = self.bot.get_cog('Sql')
         if sql is not None:
 
@@ -331,7 +333,7 @@ class Economy(commands.Cog):
                 await self.bot.pg_con.execute("INSERT INTO inventory (user_id) VALUES ($1)", str(ctx.author.id))
             await self.bot.pg_con.execute(
                 f"UPDATE inventory SET {result[0][2]} = {result[0][2]} + 1 WHERE user_id = $1", str(ctx.author.id))
-            await ctx.send(f"Bought {result[0][2]} for **{result[0][1]}** ducc dollars")
+            await ctx.send(f"Bought {result[0][2]} for **{result[0][1]}** {money_name}")
 
     @commands.command(aliases=['inv'])
     async def inventory(self, ctx):
