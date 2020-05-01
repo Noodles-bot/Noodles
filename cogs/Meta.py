@@ -208,7 +208,7 @@ class Meta(commands.Cog):
     async def debug_database(self, ctx):
         m = await ctx.send("Debugging...")
         await self.bot.pg_con.execute("DELETE FROM waifu WHERE user_id IS NULL OR claimed_id IS NULL OR price IS NULL")
-        await m.edit("Debug complete")
+        await m.edit(content="Debug complete")
 
 
 def setup(bot):
