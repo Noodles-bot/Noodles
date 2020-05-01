@@ -168,9 +168,11 @@ class Reddit(commands.Cog):
                               f'Comment: **{about["data"]["comment_karma"]:,}**', inline=True)
         if mod:
             subs = []
-            for sub in mod['data']:
+            for index, sub in enumerate(mod['data'], 0):
                 subs.append(sub['sr_display_name_prefixed'] + f' ({sub["subscribers"]})')
-            embed.add_field(name="**Moderated subreddits**",
+                if index > 19:
+                    break
+            embed.add_field(name=f"**Top 20 moderated subreddits\nTotal:** {len(mod['data'])}",
                             value=f"\n".join(subs), inline=False)
         await msg.edit(embed=embed)
 
