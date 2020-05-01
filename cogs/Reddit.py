@@ -124,76 +124,8 @@ class Reddit(commands.Cog):
                                            description=f'Post karma:\n**{user.link_karma:,}**\n\nComment karma:\n**{user.comment_karma:,}**',
                                            color=color))
 
-    @commands.command()
+    @commands.command(aliases=['reddit', 'stats', 'rs', 'r'])
     async def redditstats(self, ctx, user=None):
-        if user is None:
-            u = await self.bot.pg_con.fetch("SELECT user_id, username FROM reddit WHERE user_id = $1",
-                                            str(ctx.author.id))
-            if not u:
-                await ctx.send(f"Unable to locate user please use {ctx.prefix}verify or specify your username")
-                return
-            user = u[0][1]
-        b = discord.Embed(title='Loading....', color=color)
-        b.set_image(url='https://acegif.com/wp-content/uploads/cat-typing-16.gif')
-        msg = await ctx.send(embed=b)
-        i = time.perf_counter()
-        mod = []
-        try:
-            user = self.reddit.redditor(user)
-            total = 0
-            for index, sub in enumerate(user.moderated(), 1):
-                if index == 20:
-                    break
-                i = sub.subscribers
-                mod.append(f'r/{sub.display_name} ({i:,})')
-                total = total + i
-            try:
-                embed = discord.Embed(title=f'', color=color)
-                embed.set_author(name=user.name, icon_url=user.icon_img)
-                embed.add_field(name='Total Subscribers', value=f'{total:,}')
-                embed.add_field(name=f'Top {len(mod)} moderated subreddits', value='\n'.join(mod), inline=False)
-                i2 = time.perf_counter()
-                embed.set_footer(text=f"Executed in: {round((i2 - i) / 1000, 2)}s")
-                await msg.edit(embed=embed)
-
-            except discord.errors.HTTPException:
-                embed = discord.Embed(title=f'', color=color)
-                embed.set_author(name=user.name, icon_url=user.icon_img)
-                embed.add_field(name='Total Subscribers', value=f'0')
-                embed.add_field(name=f'Top 0 moderated subreddits', value='None', inline=False)
-                i2 = time.perf_counter()
-                embed.set_footer(text=f"Executed in: {round((i2 - i) / 1000, 2)}s")
-                await msg.edit(embed=embed)
-
-        except prawcore.exceptions.NotFound:
-            embed = discord.Embed(title='400', description='User not found', color=color)
-            await msg.edit(embed=embed)
-
-    @commands.command()
-    async def verify(self, ctx):
-        await ctx.author.send("What's your reddit username?")
-        m = await self.bot.wait_for('message', check=lambda msg: msg.author == ctx.author, timeout=10.0)
-        letters = string.ascii_lowercase
-        verify = ''.join([random.choice(letters) for i in range(6)])
-        ig = m.content.lower().replace('u/', '')
-        self.reddit.redditor(ig).message('Verify', f'Your verification is:\n\n **{verify}**\n\nPlease reply in dm')
-        await ctx.author.send(f"Succesfully send verification to {m.content}")
-        r = await self.bot.wait_for('message', check=lambda msg: msg.author == ctx.author)
-        if r.content.lower() == verify.lower():
-            i = await self.bot.pg_con.fetch("SELECT * FROM reddit WHERE user_id = $1", str(ctx.author.id))
-            print(i)
-            if not i:
-                await self.bot.pg_con.execute("INSERT INTO reddit (user_id, username) VALUES ($1, $2)",
-                                              str(ctx.author.id), ig)
-                await ctx.author.send("Succesfully verified")
-            else:
-                await ctx.author.send("You are already verified")
-        else:
-            await ctx.author.send("Incorrect verification")
-            return
-
-    @commands.command()
-    async def teststats(self, ctx, user=None):
 
         b = discord.Embed(title='Loading....', color=color)
         b.set_image(url='https://acegif.com/wp-content/uploads/cat-typing-16.gif')
@@ -235,6 +167,29 @@ class Reddit(commands.Cog):
                               f'Link: **{about["data"]["link_karma"]:,}**\n'
                               f'Comment: **{about["data"]["comment_karma"]:,}**', inline=True)
         await msg.edit(embed=embed)
+
+    @commands.command()
+    async def verify(self, ctx):
+        await ctx.author.send("What's your reddit username?")
+        m = await self.bot.wait_for('message', check=lambda msg: msg.author == ctx.author, timeout=10.0)
+        letters = string.ascii_lowercase
+        verify = ''.join([random.choice(letters) for i in range(6)])
+        ig = m.content.lower().replace('u/', '')
+        self.reddit.redditor(ig).message('Verify', f'Your verification is:\n\n **{verify}**\n\nPlease reply in dm')
+        await ctx.author.send(f"Succesfully send verification to {m.content}")
+        r = await self.bot.wait_for('message', check=lambda msg: msg.author == ctx.author)
+        if r.content.lower() == verify.lower():
+            i = await self.bot.pg_con.fetch("SELECT * FROM reddit WHERE user_id = $1", str(ctx.author.id))
+            print(i)
+            if not i:
+                await self.bot.pg_con.execute("INSERT INTO reddit (user_id, username) VALUES ($1, $2)",
+                                              str(ctx.author.id), ig)
+                await ctx.author.send("Succesfully verified")
+            else:
+                await ctx.author.send("You are already verified")
+        else:
+            await ctx.author.send("Incorrect verification")
+            return
 
 
 def setup(bot):
