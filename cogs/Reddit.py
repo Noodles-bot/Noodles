@@ -169,7 +169,7 @@ class Reddit(commands.Cog):
         if mod:
             subs = []
             for sub in mod['data']:
-                subs.append(sub['sr_display_name_prefixed'] + f'({sub["subscribers"]})')
+                subs.append(sub['sr_display_name_prefixed'] + f' ({sub["subscribers"]})')
             embed.add_field(name="**Moderated subreddits**",
                             value=f"\n".join(subs), inline=False)
         await msg.edit(embed=embed)
