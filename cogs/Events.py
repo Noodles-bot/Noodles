@@ -61,10 +61,7 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
-            embed = discord.Embed(title='Invalid command',
-                                  description=f'{error}, for a list of the commands use `{ctx.prefix}help`',
-                                  color=0xFFA500)
-            await ctx.send(embed=embed)
+            pass
         elif isinstance(error, discord.Forbidden):
             await ctx.send("Looks like I'm missing permissions in this server, if you want to use these commands, "
                            "please update the perms")
