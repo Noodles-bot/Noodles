@@ -1,6 +1,7 @@
+from datetime import date
+
 import discord
 from discord.ext import commands
-from datetime import date
 
 
 class Levels(commands.Cog):
@@ -20,6 +21,7 @@ class Levels(commands.Cog):
         else:
             return False
 
+    @bot.guild_only()
     @bot.Cog.listener()
     async def on_message(self, message):
         sql = self.bot.get_cog('Sql')
