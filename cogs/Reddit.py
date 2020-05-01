@@ -174,6 +174,7 @@ class Reddit(commands.Cog):
                     break
             embed.add_field(name=f"**Top 20 moderated subreddits\nTotal:** {len(mod['data'])}",
                             value=f"\n".join(subs), inline=False)
+
         await msg.edit(embed=embed)
 
     @commands.command()
