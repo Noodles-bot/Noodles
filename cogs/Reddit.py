@@ -68,6 +68,7 @@ class Reddit(commands.Cog):
                                       color=0xFFA500)
                 await ctx.send(embed=embed)
             else:
+                await ctx.send(type(self.reddit.subreddit(subreddit).mod.modqueue(only='comments', limit=None)))
                 for item in self.reddit.subreddit(subreddit).mod.modqueue(only='comments', limit=None):
                     modcomment.append(item)
                 for item in self.reddit.subreddit(subreddit).mod.modqueue(only='submissions', limit=None):

@@ -20,3 +20,6 @@ cogs/__pycache__/Waifu.cpython-38.pyc
 cogs/__pycache__/__init__.cpython-38.pyc
 utils/__pycache__/config.cpython-38.pyc
 utils/__pycache__/progress_bar.cpython-38.pyc
+utils/cython/test.py
+utils/cython/func.cp38-win32.pyd
+

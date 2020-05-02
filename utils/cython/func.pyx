@@ -7,3 +7,4 @@ def actions(str action_list):
             actions.append(log.action)
         else:
             break
+    return actions
