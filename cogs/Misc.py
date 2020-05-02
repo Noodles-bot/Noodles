@@ -252,7 +252,7 @@ class Misc(commands.Cog):
             for name in files:
                 if name.endswith('.py'):
                     python_files.append(name)
-                if name.endswith('.c++'):
+                if name.endswith('.cpp'):
                     cpp_files.append(name)
                 try:
                     with codecs.open('./' + str(pathlib.PurePath(path, name)),
