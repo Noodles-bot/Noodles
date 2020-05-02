@@ -13,7 +13,6 @@ import psutil
 from PIL import Image, ImageDraw, ImageFont
 from discord.ext import commands
 
-from utils import checks
 from utils.fun.data import color
 from utils.tools import embedinator
 
@@ -543,7 +542,6 @@ class Misc(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    @checks.is_tester()
     async def pillow(self, ctx, user: discord.Member = None):
         """Gets info about user using the pillow library"""
         msg = await ctx.send("Getting info....")
