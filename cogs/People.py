@@ -238,7 +238,7 @@ class People(commands.Cog):
     @commands.command(hidden=True)
     @checks.is_guild(guild=665249179496349716)
     async def vanilla(self, ctx):
-	await ctx.send("i was forced to make this")
+        await ctx.send("i was forced to make this")
 
 def setup(bot):
     bot.add_cog(People(bot))
