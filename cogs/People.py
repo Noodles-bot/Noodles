@@ -234,7 +234,11 @@ class People(commands.Cog):
     @checks.is_guild(guild=665249179496349716)
     async def marble(self, ctx):
         await ctx.send('<@703339033719472161> **Carbonate me mommy**')
-
+	
+    @commands.command(hidden=True)
+    @checks.is_guild(guild=665249179496349716)
+    async def vanilla(self, ctx):
+	await ctx.send("i was forced to make this")
 
 def setup(bot):
     bot.add_cog(People(bot))
