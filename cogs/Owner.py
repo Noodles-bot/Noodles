@@ -461,6 +461,7 @@ class Owner(commands.Cog):
                 async with session.post(url='https://hastebin.com/documents', data=output.encode('utf-8')) as resp:
                     key = await resp.json()
                     link = "https://hastebin.com/" + key["key"]
+
             await ctx.send(f"Output was too long: {link}")
 
 
