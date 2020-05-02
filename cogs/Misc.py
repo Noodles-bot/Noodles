@@ -291,7 +291,7 @@ class Misc(commands.Cog):
                   f'**Number of C++ files: **{len(cpp_files)}\n')
         embed.set_footer(text='Python ' + platform.python_version() + ' | C++20')
         embed.add_field(name='For more help',
-                        value='[join the discord server](https://discordapp.com/invite/Kzcr6pE)',
+                        value='[Join the discord server](https://discordapp.com/invite/Kzcr6pE)',
                         inline=False)
         await ctx.send(embed=embed)
 
