@@ -258,7 +258,8 @@ class Misc(commands.Cog):
                     with codecs.open('./' + str(pathlib.PurePath(path, name)),
                                      'r', 'utf-8') as f:
                         for i, l in enumerate(f):
-                            if len(l.strip()) != 0 and name.endswith('.py') or name.endswith('.c++'):
+                            if len(l.strip()) != 0 and name.endswith('.py') or name.endswith('.c++') or name.endswith(
+                                    '.c'):
                                 total += 1
                 except:
                     pass
@@ -288,7 +289,7 @@ class Misc(commands.Cog):
                   f'**Cached Messages: **{len(self.bot.cached_messages)}\n' +
                   f'**Number of Python files: **{len(python_files)}\n'
                   f'**Number of C++ files: **{len(cpp_files)}\n')
-        embed.set_footer(text='Python ' + platform.python_version() + ' | C++20')
+        embed.set_footer(text='Python ' + platform.python_version() + ' | C++20 | C18')
         embed.add_field(name='For more help',
                         value='[Join the discord server](https://discordapp.com/invite/Kzcr6pE)',
                         inline=False)
