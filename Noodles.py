@@ -1,12 +1,13 @@
 import asyncio
 import os
-import discord
-import asyncpg
 import subprocess
 import sys
-
 from datetime import datetime
+
+import asyncpg
+import discord
 from discord.ext import commands
+
 from utils.secret import *
 
 __version__ = '0.4.11 Alpha'
@@ -85,7 +86,7 @@ async def on_ready():
                                                         name=f'{len(bot.users):,} users | {len(bot.guilds)} guilds'))
 
 
-@bot.command(aliases=['up'])
+@bot.command(aliases=['up'], hidden=True)
 async def uptime(ctx):
     delta_uptime = datetime.utcnow() - bot.launch_time
     hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
