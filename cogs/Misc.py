@@ -252,13 +252,13 @@ class Misc(commands.Cog):
             for name in files:
                 if name.endswith('.py'):
                     python_files.append(name)
-                if name.endswith('.cpp'):
+                if name.endswith('.c++'):
                     cpp_files.append(name)
                 try:
                     with codecs.open('./' + str(pathlib.PurePath(path, name)),
                                      'r', 'utf-8') as f:
                         for i, l in enumerate(f):
-                            if len(l.strip()) != 0 and name.endswith('.py') or name.endswith('.cpp'):
+                            if len(l.strip()) != 0 and name.endswith('.py') or name.endswith('.c++'):
                                 total += 1
                 except:
                     pass
