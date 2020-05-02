@@ -56,27 +56,27 @@ include CMakeFiles/untitled.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/untitled.dir/flags.make
 
-CMakeFiles/untitled.dir/main.cpp.obj: CMakeFiles/untitled.dir/flags.make
-CMakeFiles/untitled.dir/main.cpp.obj: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Matthew\Documents\Scripts\Python\Discord\Noodles\utils\cpp\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/untitled.dir/main.cpp.obj"
-	C:\MinGW64\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\untitled.dir\main.cpp.obj -c C:\Users\Matthew\Documents\Scripts\Python\Discord\Noodles\utils\cpp\main.cpp
+CMakeFiles/untitled.dir/foo.cpp.obj: CMakeFiles/untitled.dir/flags.make
+CMakeFiles/untitled.dir/foo.cpp.obj: ../foo.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\Matthew\Documents\Scripts\Python\Discord\Noodles\utils\cpp\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/untitled.dir/foo.cpp.obj"
+	C:\MinGW64\bin\g++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\untitled.dir\foo.cpp.obj -c C:\Users\Matthew\Documents\Scripts\Python\Discord\Noodles\utils\cpp\foo.cpp
 
-CMakeFiles/untitled.dir/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/untitled.dir/main.cpp.i"
-	C:\MinGW64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Matthew\Documents\Scripts\Python\Discord\Noodles\utils\cpp\main.cpp > CMakeFiles\untitled.dir\main.cpp.i
+CMakeFiles/untitled.dir/foo.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/untitled.dir/foo.cpp.i"
+	C:\MinGW64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\Matthew\Documents\Scripts\Python\Discord\Noodles\utils\cpp\foo.cpp > CMakeFiles\untitled.dir\foo.cpp.i
 
-CMakeFiles/untitled.dir/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/untitled.dir/main.cpp.s"
-	C:\MinGW64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Matthew\Documents\Scripts\Python\Discord\Noodles\utils\cpp\main.cpp -o CMakeFiles\untitled.dir\main.cpp.s
+CMakeFiles/untitled.dir/foo.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/untitled.dir/foo.cpp.s"
+	C:\MinGW64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\Matthew\Documents\Scripts\Python\Discord\Noodles\utils\cpp\foo.cpp -o CMakeFiles\untitled.dir\foo.cpp.s
 
 # Object files for target untitled
 untitled_OBJECTS = \
-"CMakeFiles/untitled.dir/main.cpp.obj"
+"CMakeFiles/untitled.dir/foo.cpp.obj"
 
 # External object files for target untitled
 untitled_EXTERNAL_OBJECTS =
 
-untitled.exe: CMakeFiles/untitled.dir/main.cpp.obj
+untitled.exe: CMakeFiles/untitled.dir/foo.cpp.obj
 untitled.exe: CMakeFiles/untitled.dir/build.make
 untitled.exe: CMakeFiles/untitled.dir/linklibs.rsp
 untitled.exe: CMakeFiles/untitled.dir/objects1.rsp

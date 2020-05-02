@@ -80,7 +80,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/utils/cpp/main.cpp">
+		<Unit filename="C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/utils/cpp/foo.cpp">
 			<Option target="untitled"/>
 		</Unit>
 		<Unit filename="C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/utils/cpp/CMakeLists.txt">

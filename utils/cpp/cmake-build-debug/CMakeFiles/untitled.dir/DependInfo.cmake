@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/utils/cpp/main.cpp" "C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/utils/cpp/cmake-build-debug/CMakeFiles/untitled.dir/main.cpp.obj"
+  "C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/utils/cpp/foo.cpp" "C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/utils/cpp/cmake-build-debug/CMakeFiles/untitled.dir/foo.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

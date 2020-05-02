@@ -6,7 +6,11 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/utils/cpp/main.cpp
+C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/utils/cpp/foo.cpp
 iostream
+-
+chrono
+-
+ctime
 -
 
