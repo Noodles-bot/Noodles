@@ -1,9 +1,4 @@
-import asyncio
-
-import asyncpg
 from discord.ext import commands
-import discord
-from utils.secret import *
 
 
 class MissingPermissions:
@@ -39,16 +34,5 @@ def is_user(user_id: int):
             return True
         else:
             return False
-
-    return commands.check(predicate)
-
-
-def is_tester():
-    async def predicate(ctx):
-        conn = await asyncpg.connect(database=DATABASE, user=USER, password=PASSWORD)
-        y = await conn.fetch("SELECT tester FROM users WHERE user_id = $1 ", str(ctx.author.id))
-        await conn.close()
-        print('hey')
-        return y[0][0]
 
     return commands.check(predicate)
