@@ -1,8 +1,5 @@
-import random
-
 import discord
 from discord.ext import commands
-from utils.fun.data import tips
 
 
 # import time
@@ -86,6 +83,7 @@ class Events(commands.Cog):
                 if str(res[1]) == str(ctx.author):
                     emoji = str(res[0].emoji)
                     await ctx.message.remove_reaction(res[0].emoji, res[1])
+            raise error
 
 
 def setup(bot):
