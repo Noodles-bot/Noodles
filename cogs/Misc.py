@@ -290,6 +290,9 @@ class Misc(commands.Cog):
                   f'**Number of Python files: **{len(python_files)}\n'
                   f'**Number of C++ files: **{len(cpp_files)}\n')
         embed.set_footer(text='Python ' + platform.python_version() + ' | C++20')
+        embed.add_field(name=' ',
+                        value='For more help [join the discord server](https://discordapp.com/invite/Kzcr6pE)',
+                        inline=False)
         await ctx.send(embed=embed)
 
     @commands.command()
