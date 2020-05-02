@@ -9,7 +9,6 @@ import traceback
 from contextlib import redirect_stdout
 from typing import Optional
 
-import HasteBin
 import aiofiles
 import aiohttp
 import discord
@@ -25,8 +24,6 @@ client_id = 'ce5aa0309c82ab2'
 client_secret = '4d963d5d20242373d3152b10aa9873c2143dce6f'
 
 client = ImgurClient(client_id, client_secret)
-
-haste = HasteBin.Session(links=True)
 
 session = aiohttp.ClientSession()
 
@@ -460,7 +457,10 @@ class Owner(commands.Cog):
                            f'{output}\n'
                            f'```')
         except discord.HTTPException:
-            link = await haste.upload(output)
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url='https://hastebin.com/documents', data=output.encode('utf-8')) as resp:
+                    key = await resp.json()
+                    link = "https://hastebin.com/" + key["key"]
             await ctx.send(f"Output was too long: {link}")
 
 
