@@ -1,24 +1,23 @@
+import asyncio
+import copy
 import inspect
+import io
+import json
 import os
-import subprocess
+import textwrap
+import traceback
+from contextlib import redirect_stdout
+from typing import Optional
 
+import HasteBin
+import aiofiles
 import aiohttp
 import discord
-import io
-import traceback
-import textwrap
-import copy
-import asyncio
-import json
-import aiofiles
-import requests
 import matplotlib.pyplot as plt
-
-from matplotlib.ticker import MultipleLocator
-from typing import Optional
-from contextlib import redirect_stdout
+import requests
 from discord.ext import commands
 from imgurpython import ImgurClient
+from matplotlib.ticker import MultipleLocator
 
 from utils import checks
 
@@ -26,6 +25,8 @@ client_id = 'ce5aa0309c82ab2'
 client_secret = '4d963d5d20242373d3152b10aa9873c2143dce6f'
 
 client = ImgurClient(client_id, client_secret)
+
+haste = HasteBin.Session(links=True)
 
 session = aiohttp.ClientSession()
 
@@ -454,9 +455,13 @@ class Owner(commands.Cog):
     async def pull(self, ctx):
         stream = os.popen('git pull https://DankDumpster:Jupiter22yolO@github.com/DankDumpster/Noodles')
         output = stream.read()
-        await ctx.send('```\n'
-                       f'{output}\n'
-                       f'```')
+        try:
+            await ctx.send('```\n'
+                           f'{output}\n'
+                           f'```')
+        except discord.HTTPException:
+            link = await haste.upload(output)
+            await ctx.send(f"Output was too long: {link}")
 
 
 def setup(bot):
