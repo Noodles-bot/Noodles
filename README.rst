@@ -1,14 +1,25 @@
-Noodles
-=======
+Noodles discord bot
+===================
 
 .. image:: https://discordapp.com/api/guilds/705526724783505518/embed.png
    :target: https://discord.gg/Kzcr6pE
    :alt: Discord server invite
 
-Discord bot made by DankDumpster™#5335 (357918459058978816)
-For self hosting
-Put your token in the noodles.py folder
-and add your secret to secret.py
+Discord bot made by DankDumpster#5335 (357918459058978816)
+
+.. code:: sh
+
+    git clone https://github.com/DankDumpster/Noodles
+
+Requirements
+------------
+
+- Python >= 3.7
+- `Discord.py <https://github.com/Rapptz/discord.py>`_
+- `Praw <https://praw.readthedocs.io/en/latest/>`_
+- Psuitl
+- Numpy
+- Pillow
 
 Roadmap
 -------
@@ -18,3 +29,5 @@ Roadmap
 - [ ] Smooth database management
 - [ ] Documentation with flask or django
 - [ ] Public release
+
+
