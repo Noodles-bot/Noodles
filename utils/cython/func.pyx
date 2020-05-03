@@ -8,3 +8,5 @@ def actions(str action_list):
         else:
             break
     return actions
+
+def
