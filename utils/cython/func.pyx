@@ -22,12 +22,13 @@ def info():
                 python_files.append(name)
             if name.endswith('.cpp'):
                 cpp_files.append(name)
-                with codecs.open('./' + str(pathlib.PurePath(path, name)),
+                with codecs.open(str(pathlib.PurePath(path, name)),
                                  'r', 'utf-8') as f:
-                    print(f)
+                    print(str(pathlib.PurePath(path, name)))
                     for i, l in enumerate(f):
-                        if len(l.strip()) != 0 and name.endswith('.py') or name.endswith('.c++') or name.endswith(
+                        if name.endswith('.py'):
+                            print(name)
+                        if len(l.strip()) != 0 and name.endswith('.py') or name.endswith('.cpp') or name.endswith(
                                 '.c'):
-                            print("yeet")
                             total += 1
     return python_files, cpp_files, total

@@ -258,7 +258,6 @@ class Misc(commands.Cog):
                     with codecs.open('./' + str(pathlib.PurePath(path, name)),
                                      'r', 'utf-8') as f:
                         for i, l in enumerate(f):
-                            await ctx.send(l)
                             if len(l.strip()) != 0 and name.endswith('.py') or name.endswith('.c++') or name.endswith(
                                     '.c'):
                                 total += 1
