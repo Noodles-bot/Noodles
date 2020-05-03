@@ -16,18 +16,18 @@ def info():
     cdef list python_files = []
     cdef list cpp_files = []
     cdef int total = 0
-    for path, subdirs, files in os.walk('.'):
+    for path, subdirs, files in os.walk(r'..'):
         for name in files:
             if name.endswith('.py'):
                 python_files.append(name)
             if name.endswith('.cpp'):
                 cpp_files.append(name)
-            try:
                 with codecs.open('./' + str(pathlib.PurePath(path, name)),
                                  'r', 'utf-8') as f:
+                    print(f)
                     for i, l in enumerate(f):
                         if len(l.strip()) != 0 and name.endswith('.py') or name.endswith('.c++') or name.endswith(
                                 '.c'):
+                            print("yeet")
                             total += 1
-            except:
-                raise SystemError()
+    return python_files, cpp_files, total
