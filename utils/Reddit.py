@@ -4,6 +4,7 @@ from datetime import datetime
 import aiohttp
 import discord
 import praw
+import prawcore
 from discord.ext import commands
 
 from utils.fun.data import color
@@ -123,7 +124,6 @@ class Reddit(commands.Cog):
 
     @commands.command()
     async def karma(self, ctx, user):
-
         reddit = praw.Reddit(client_id=client_id,
                              client_secret=client_secret,
                              username=username,
@@ -133,9 +133,12 @@ class Reddit(commands.Cog):
         b = discord.Embed(title='Loading....', color=color)
         b.set_image(url='https://acegif.com/wp-content/uploads/cat-typing-16.gif')
         msg = await ctx.send(embed=b)
-        await msg.edit(embed=discord.Embed(title=f'Total Karma: {user.link_karma + user.comment_karma:,}',
-                                           description=f'Post karma:\n**{user.link_karma:,}**\n\nComment karma:\n**{user.comment_karma:,}**',
-                                           color=color))
+        try:
+            await msg.edit(embed=discord.Embed(title=f'Total Karma: {user.link_karma + user.comment_karma:,}',
+                                               description=f'Post karma:\n**{user.link_karma:,}**\n\nComment karma:\n**{user.comment_karma:,}**',
+                                               color=color))
+        except prawcore.NotFound:
+            await msg.edit("Unable to locate user, please try again")
 
     @commands.command()
     async def stats(self, ctx, user):
