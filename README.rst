@@ -21,6 +21,24 @@ Requirements
 - Numpy
 - Pillow
 
+Setup
+-----
+Create a secret.py file in utils/
+
+
+.. code:: py
+   
+   # Reddit stuff
+   client_id = ''
+   client_secret = ''
+   username = ''
+   password = ''
+   user_agent = ''
+   # Basic stuff
+   TOKEN = '' # Your bot token
+   DATABASE = '' # Your postgresql url, you can set one up at https://www.elephantsql.com/
+   repo = '' # Your forked repo for pull command
+   
 Roadmap
 -------
 - [x] Add an level system
