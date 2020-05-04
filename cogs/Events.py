@@ -32,7 +32,7 @@ class Events(commands.Cog):
             people.append(user)
         id = str(member.guild.id)
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
-                                                                 name=f'{len(bot.users):,} users | {len(bot.guilds)} guilds'))
+                                                                 name=f'{len(self.bot.users):,} users | {len(self.bot.guilds)} guilds'))
         if "665249179496349716" in id:
             if member.bot:
                 role = discord.utils.get(member.guild.roles, id=665390281100623872)
