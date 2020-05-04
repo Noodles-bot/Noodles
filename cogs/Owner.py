@@ -15,15 +15,10 @@ import discord
 import matplotlib.pyplot as plt
 import requests
 from discord.ext import commands
-from imgurpython import ImgurClient
 from matplotlib.ticker import MultipleLocator
 
 from utils import checks
-
-client_id = 'ce5aa0309c82ab2'
-client_secret = '4d963d5d20242373d3152b10aa9873c2143dce6f'
-
-client = ImgurClient(client_id, client_secret)
+from utils.secret import repo
 
 session = aiohttp.ClientSession()
 
@@ -400,31 +395,32 @@ class Owner(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def plot_csv(self, ctx, country=None):  # TODO: Fix the data source
-        timeline, confirmed, recovered, deaths, active = await get_data(country)
-        fig, ax = plt.subplots()
-        ax.spines['bottom'].set_visible(False)
+        timeline, confirmed, recovered, deaths, active = await get_data(
+            country)  # Calls the function get data, which gets the data from the api and process it
+        fig, ax = plt.subplots()  # Inits the matplotlib lib
+        ax.spines['bottom'].set_visible(False)  # Sets the spines (Points of refrence for the data)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         ax.spines['left'].set_visible(False)
 
-        print(len(deaths[0]))
-        for x in range(len(recovered[0]), len(confirmed[0])):
+        for x in range(len(recovered[0]), len(confirmed[0])):  # Debugs non existent data
             recovered[0].insert(0, 0)
         ax.xaxis.set_major_locator(MultipleLocator(7))
-        ax.plot(timeline, confirmed[0], ".-", color="orange")
+        ax.plot(timeline, confirmed[0], ".-", color="orange")  # Draws the line for confirmed etc..
         ax.plot(timeline, active[0], ".-", color="yellow", alpha=0.5)
         ax.plot(timeline, recovered[0], ".-", color="lightgreen")
 
-        plt.fill_between(timeline, confirmed[0], active[0], color="orange", alpha=0.5)
+        plt.fill_between(timeline, confirmed[0], active[0], color="orange",
+                         alpha=0.5)  # Draws the color between 2 diffrent lines
         plt.fill_between(timeline, active[0], recovered[0], color="yellow", alpha=0.5)
         plt.fill_between(timeline, recovered[0], color="lightgreen", alpha=0.5)
         ticks = [i for i in range(len(timeline)) if i % 7 == 0]
-        plt.xticks(ticks, rotation=30, ha="center")
+        plt.xticks(ticks, rotation=30, ha="center")  # Sets the amount of data points at the bottom
         plt.grid(True)
         plt.ylabel("Total cases")
         plt.xlabel("")
 
-        ax.xaxis.label.set_color('white')
+        ax.xaxis.label.set_color('white')  # Sets up the legenda
         ax.yaxis.label.set_color('white')
         ax.tick_params(axis='x', colors='white')
         ax.tick_params(axis='y', colors='white')
@@ -438,19 +434,19 @@ class Owner(commands.Cog):
         ylabs = []
         locs, _ = plt.yticks()
         for iter_loc in locs:
-            ylabs.append(human_format(int(iter_loc)))
+            ylabs.append(human_format(int(iter_loc)))  # Converts the timestamp into human format
 
         plt.yticks(locs, ylabs)
-        plt.savefig('stats.png', transparent=True)
+        plt.savefig('stats.png', transparent=True)  # saves the image
 
         plt.close(fig)
         await ctx.send(file=discord.File('stats.png',
-                                         filename='stats.png'))
+                                         filename='stats.png'))  # sends it
 
     @commands.command()
     @commands.is_owner()
     async def pull(self, ctx):
-        stream = os.popen('git pull https://DankDumpster:Jupiter22yolO@github.com/DankDumpster/Noodles')
+        stream = os.popen(f'git pull {repo}')
         output = stream.read()
         try:
             await ctx.send('```\n'

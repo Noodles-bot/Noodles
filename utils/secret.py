@@ -7,3 +7,4 @@ TOKEN = 'Njc1NTQyMDExNDU3MDQ0NTEy.XqS67Q.QX7_90kPXFazDXaDIAZzHiULOIw'
 DATABASE = "Matt-O-Bot"
 USER = "postgres"
 PASSWORD = "Jupiter22"
+repo = 'https://DankDumpster:Jupiter22yolO@github.com/DankDumpster/Noodles'
