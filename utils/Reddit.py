@@ -1,19 +1,13 @@
-import asyncio
-import time
+import random
+from datetime import datetime
 
 import aiohttp
-import praw
-import prawcore
 import discord
-import random
-import requests
-
+import praw
 from discord.ext import commands
-from datetime import datetime
 
 from utils.fun.data import color
 from utils.secret import *
-from utils import checks
 
 
 async def q(subreddit):
@@ -21,46 +15,6 @@ async def q(subreddit):
         async with cs.get(f'https://www.reddit.com/r/{subreddit}/about/modqueue/.json') as r:
             retrieved = await r.json()  # returns dict
     return retrieved
-
-
-def stats(user):
-    i = time.perf_counter()
-    mod = []
-    reddit = praw.Reddit(client_id=client_id,
-                         client_secret=client_secret,
-                         username=username,
-                         password=password,
-                         user_agent=user_agent)
-    try:
-        user = reddit.redditor(user)
-        total = 0
-        for index, sub in enumerate(user.moderated(), 1):
-            if index == 20:
-                break
-            i = sub.subscribers
-            mod.append(f'r/{sub.display_name} ({i:,})')
-            total = total + i
-        try:
-            embed = discord.Embed(title=f'', color=color)
-            embed.set_author(name=user.name, icon_url=user.icon_img)
-            embed.add_field(name='Total Subscribers', value=f'{total:,}')
-            embed.add_field(name=f'Top {len(mod)} moderated subreddits', value='\n'.join(mod), inline=False)
-            i2 = time.perf_counter()
-            embed.set_footer(text=f"Executed in: {(i2 - i) / 100}s")
-            return embed
-
-        except discord.errors.HTTPException:
-            embed = discord.Embed(title=f'', color=color)
-            embed.set_author(name=user.name, icon_url=user.icon_img)
-            embed.add_field(name='Total Subscribers', value=f'0')
-            embed.add_field(name=f'Top 0 moderated subreddits', value='None', inline=False)
-            i2 = time.perf_counter()
-            embed.set_footer(text=f"Executed in: {(i2 - i) / 100}s")
-            return embed  # TODO: Finish this
-
-    except prawcore.exceptions.NotFound:
-        embed = discord.Embed(title='400', description='User not found', color=color)
-        return embed
 
 
 class Reddit(commands.Cog):
