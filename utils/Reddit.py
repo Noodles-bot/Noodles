@@ -4,7 +4,6 @@ from datetime import datetime
 import aiohttp
 import discord
 import praw
-import prawcore
 from discord.ext import commands
 
 from utils.fun.data import color
@@ -137,7 +136,7 @@ class Reddit(commands.Cog):
             await msg.edit(embed=discord.Embed(title=f'Total Karma: {user.link_karma + user.comment_karma:,}',
                                                description=f'Post karma:\n**{user.link_karma:,}**\n\nComment karma:\n**{user.comment_karma:,}**',
                                                color=color))
-        except prawcore.NotFound:
+        except discord.NotFound:
             await msg.edit("Unable to locate user, please try again")
 
     @commands.command()
