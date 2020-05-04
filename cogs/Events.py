@@ -34,11 +34,14 @@ class Events(commands.Cog):
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
                                                                  name=f'{len(self.bot.users):,} users | {len(self.bot.guilds)} guilds'))
         if "665249179496349716" in id:
-            if member.bot:
-                role = discord.utils.get(member.guild.roles, id=665390281100623872)
-            else:
-                role = discord.utils.get(member.guild.roles, id=681163948149702776)
-            await member.add_roles(role, atomic=True)
+            try:
+                if member.bot:
+                    role = discord.utils.get(member.guild.roles, id=665390281100623872)
+                else:
+                    role = discord.utils.get(member.guild.roles, id=681163948149702776)
+                await member.add_roles(role, atomic=True)
+            except discord.errors.Forbidden:
+                pass
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
