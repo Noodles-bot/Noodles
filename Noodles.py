@@ -1,4 +1,3 @@
-import asyncio
 import os
 import subprocess
 import sys
@@ -37,15 +36,6 @@ async def create_db_pool():
     bot.pg_con = await asyncpg.create_pool(
         dsn=DATABASE,
         min_size=1, max_size=5)
-
-
-async def cleaner():
-    while True:
-        eshack = await bot.get_guild(564974738716360724)
-        for user in eshack.members:
-            if not user.roles:
-                await user.kick(reason="Inactive")
-        await asyncio.sleep(172800)
 
 
 async def get_prefix(bot, message):
