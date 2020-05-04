@@ -60,9 +60,12 @@ class Events(commands.Cog):
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
             pass
-        elif isinstance(error, discord.Forbidden):
-            await ctx.send("Looks like I'm missing permissions in this server, if you want to use these commands, "
-                           "please update the perms")
+        elif isinstance(error, discord.errors.Forbidden):
+            try:
+                await ctx.send("Looks like I'm missing permissions in this server, if you want to use these commands, "
+                               "please update the perms")
+            except discord.errors.Forbidden:
+                pass
         elif isinstance(error, commands.CommandOnCooldown):
             pass
         else:
