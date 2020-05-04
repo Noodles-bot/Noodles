@@ -25,7 +25,6 @@ Setup
 -----
 Create a secret.py file in utils/
 
-
 .. code:: py
    
    # Reddit stuff

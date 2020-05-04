@@ -22,3 +22,6 @@ utils/__pycache__/progress_bar.cpython-38.pyc
 utils/cython/test.py
 utils/cython/func.cp38-win32.pyd
 utils/secret.py
+utils/c++/cmake-build-debug/CMakeFiles/3.16.5/CompilerIdC/tmp/
+utils/c++/cmake-build-debug/CMakeFiles/3.16.5/CompilerIdCXX/tmp/
+utils/c++/cmake-build-debug/CMakeFiles/CMakeTmp/
