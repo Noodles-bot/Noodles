@@ -59,10 +59,8 @@ class Reddit(commands.Cog):
             if subreddit is None:
                 for item in self.reddit.subreddit('mod').mod.modqueue(only='comments', limit=None):
                     modcomment.append(item)
-                print(modcomment)
                 for item in self.reddit.subreddit('mod').mod.modqueue(only='submissions', limit=None):
                     modsub.append(item)
-                print(modsub)
                 embed = discord.Embed(title='',
                                       description=f'Total Items: **{len(modcomment) + len(modsub)}**\n\nSubmissions: **{len(modsub)}**\nComments: **{len(modcomment)}**',
                                       color=0xFFA500)
