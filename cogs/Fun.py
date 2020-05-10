@@ -152,7 +152,7 @@ class Fun(commands.Cog):
         arr = BytesIO()
         meme.save(arr, format="PNG")
         arr.seek(0)
-        file = discord.File(arr)
+        file = discord.File(arr, filename='hitler.png')
         await ctx.send(file=file)
 
 
