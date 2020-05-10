@@ -140,7 +140,7 @@ class Fun(commands.Cog):
             await ctx.send(data['error_message'])
 
     @commands.command()
-    async def hitler(self, ctx, user=None):
+    async def hitler(self, ctx, user: discord.Member = None):
         user = user or ctx.author
         meme = PIL.Image.open(BytesIO(requests.get('https://i.imgflip.com/2kycbm.jpg').content))
         meme = meme.resize((640, 480), PIL.Image.ANTIALIAS)
