@@ -160,7 +160,7 @@ class Fun(commands.Cog):
     async def hitler(self, ctx, user=None):
         user = user or ctx.author
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            meme = executor.submit(Memes.hitler, user)
+            meme = executor.submit(Memes.hitler(user))
             arr = meme.result()
             file = discord.File(arr)
         await ctx.send(file=file)
