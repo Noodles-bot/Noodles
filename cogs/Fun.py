@@ -5,6 +5,7 @@ import PIL
 import aiohttp
 import discord
 import requests
+from PIL import ImageDraw
 from discord.ext import commands
 
 from utils.fun.data import fight_results, insults
@@ -155,8 +156,30 @@ class Fun(commands.Cog):
         await ctx.send(file=file)
 
     @commands.command()
-    async def spank(self, ctx, user=None):
+    async def spank(self, ctx, user: discord.Member = None):
         user = user or ctx.author
+        meme = PIL.Image.open(
+            BytesIO(requests.get('https://heidelblog.net/wp-content/uploads/2013/12/spanking.jpg').content))
+        meme = meme.resize((640, 480), PIL.Image.ANTIALIAS)
+
+        victim = PIL.Image.open(BytesIO(requests.get(ctx.author.avatar_url).content))
+        victim = victim.resize((140, 140), PIL.Image.ANTIALIAS)
+
+        user = PIL.Image.open(BytesIO(requests.get(user.avatar_url).content))
+        user = user.resize((140, 140), PIL.Image.ANTIALIAS)
+
+        mask_im = PIL.Image.new("L", user.size, 0)
+        draw = ImageDraw.Draw(mask_im)
+        draw.ellipse((0, 0, 140, 140), fill=255)
+
+        meme.paste(user, (310, 10), mask_im)
+        meme.paste(victim, (460, 200), mask_im)
+
+        arr = BytesIO()
+        meme.save(arr, format="PNG")
+        arr.seek(0)
+        file = discord.File(arr, filename='spank.png')
+        await ctx.send(file=file)
 
 
 def setup(bot):
