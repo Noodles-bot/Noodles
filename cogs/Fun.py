@@ -144,7 +144,7 @@ class Fun(commands.Cog):
     async def hitler(self, ctx, user=None):
         user = user or ctx.author
         response = requests.get(user.avatar_url)
-        meme = PIL.Image.open('/images/memes/worse_than_hitler.jpg')
+        meme = PIL.Image.open('../images/memes/worse_than_hitler.jpg')
         user = PIL.Image.open(BytesIO(response.content))
         meme.paste(user)
 
