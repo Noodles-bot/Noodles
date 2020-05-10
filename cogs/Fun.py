@@ -123,7 +123,7 @@ class Fun(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def memegen(self, ctx, arg1, arg2):
-        headers = {'template_id': 112126428,
+        headers = {'template_id': '112126428',
                    'username': 'DankDumpster',
                    'password': password,
                    'text0': arg1,
