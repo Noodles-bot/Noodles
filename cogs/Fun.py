@@ -1,3 +1,4 @@
+import concurrent.futures
 import random
 from io import BytesIO
 
@@ -12,6 +13,21 @@ from utils.fun.fortunes import fortunes
 from utils.secret import *
 
 session = aiohttp.ClientSession()
+
+
+class Memes:
+
+    def hitler(self, user):
+        meme = PIL.Image.open(BytesIO(requests.get('https://i.imgflip.com/2kycbm.jpg').content))
+        meme = meme.resize((640, 480), PIL.Image.ANTIALIAS)
+        user = PIL.Image.open(BytesIO(requests.get(user.avatar_url).content))
+        user = user.resize((180, 180), PIL.Image.ANTIALIAS)
+        meme.paste(user, (65, 60))
+
+        arr = BytesIO()
+        meme.save(arr, format="PNG")
+        arr.seek(0)
+        return arr
 
 
 class Fun(commands.Cog):
@@ -143,16 +159,10 @@ class Fun(commands.Cog):
     @commands.is_owner()
     async def hitler(self, ctx, user=None):
         user = user or ctx.author
-        meme = PIL.Image.open(BytesIO(requests.get('https://i.imgflip.com/2kycbm.jpg').content))
-        meme = meme.resize((640, 480), PIL.Image.ANTIALIAS)
-        user = PIL.Image.open(BytesIO(requests.get(user.avatar_url).content))
-        user = user.resize((128, 128), PIL.Image.ANTIALIAS)
-        meme.paste(user, (100, 0))
-
-        arr = BytesIO()
-        meme.save(arr, format="PNG")
-        arr.seek(0)
-        file = discord.File(arr)
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            meme = executor.submit(Memes.hitler, user)
+            arr = meme.result()
+            file = discord.File(arr)
         await ctx.send(file=file)
 
 
