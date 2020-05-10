@@ -143,13 +143,12 @@ class Fun(commands.Cog):
     @commands.is_owner()
     async def hitler(self, ctx, user=None):
         user = user or ctx.author
-        response = requests.get(user.avatar_url)
         meme = PIL.Image.open(BytesIO(requests.get('https://i.imgflip.com/2kycbm.jpg').content))
-        user = PIL.Image.open(BytesIO(response.content))
+        user = PIL.Image.open(BytesIO(requests.get(user.avatar_url).content))
         meme.paste(user)
 
         arr = BytesIO()
-        meme.save(arr, format="png")
+        meme.save(arr, format="PNG")
         arr.seek(0)
 
         file = discord.File(arr)
