@@ -130,7 +130,7 @@ class Fun(commands.Cog):
         ) as resp:
             data = await resp.json()
         if data['success']:
-            await ctx.send(discord.Embed().set_image(url=data['data']['url']))
+            await ctx.send(embed=discord.Embed().set_image(url=data['data']['url']))
         else:
             await ctx.send(data['error_message'])
 
