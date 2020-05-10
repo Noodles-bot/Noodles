@@ -1,10 +1,12 @@
-import aiohttp
 import random
+
+import aiohttp
 import discord
 from discord.ext import commands
 
-from utils.fun.fortunes import fortunes
 from utils.fun.data import fight_results, insults
+from utils.fun.fortunes import fortunes
+from utils.secret import *
 
 session = aiohttp.ClientSession()
 
@@ -117,7 +119,22 @@ class Fun(commands.Cog):
         async with session.get('https://complimentr.com/api') as data:
             data = await data.json(content_type=None)
         await ctx.send(member.name + ", " + data['compliment'].capitalize())
-    # TODO: Add tic tac toe
+
+    @commands.command()
+    @commands.is_owner()
+    async def memegen(self, ctx, arg1, arg2):
+        headers = {'template_id': 112126428,
+                   'username': img_username,
+                   'password': img_password,
+                   'text0': arg1,
+                   'text1': arg2}
+        async with session.get('https://api.imgflip.com/caption_image', headers=headers) as resp:
+            data = await resp.json()
+
+        if data['success']:
+            await ctx.send(data['data']['url'])
+        else:
+            await ctx.send(data['error_message'])
 
 
 def setup(bot):

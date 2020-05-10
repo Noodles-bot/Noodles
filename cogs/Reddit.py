@@ -56,26 +56,15 @@ class Reddit(commands.Cog):
         modcomment = []
         modsub = []
         async with ctx.typing():
-            if subreddit is None:
-                for item in self.reddit.subreddit('mod').mod.modqueue(only='comments', limit=None):
-                    modcomment.append(item)
-                for item in self.reddit.subreddit('mod').mod.modqueue(only='submissions', limit=None):
-                    modsub.append(item)
-                embed = discord.Embed(title='',
-                                      description=f'Total Items: **{len(modcomment) + len(modsub)}**\n\nSubmissions: **{len(modsub)}**\nComments: **{len(modcomment)}**',
-                                      color=0xFFA500)
-                await ctx.send(embed=embed)
-            else:
-                await ctx.send(type(self.reddit.subreddit(subreddit).mod.modqueue(only='comments', limit=None)))
-                for item in self.reddit.subreddit(subreddit).mod.modqueue(only='comments', limit=None):
-                    modcomment.append(item)
-                for item in self.reddit.subreddit(subreddit).mod.modqueue(only='submissions', limit=None):
-                    modsub.append(item)
-                embed = discord.Embed(title='',
-                                      description=f'Total Items: **{len(modcomment) + len(modsub)}**\n\nSubmissions: **{len(modsub)}**\nComments: **{len(modcomment)}**',
-                                      color=0xFFA500)
-
-                await ctx.send(embed=embed)
+            subreddit = subreddit or 'mod'
+            for item in self.reddit.subreddit(subreddit).mod.modqueue(only='comments', limit=None):
+                modcomment.append(item)
+            for item in self.reddit.subreddit(subreddit).mod.modqueue(only='submissions', limit=None):
+                modsub.append(item)
+            embed = discord.Embed(title='',
+                                  description=f'Total Items: **{len(modcomment) + len(modsub)}**\n\nSubmissions: **{len(modsub)}**\nComments: **{len(modcomment)}**',
+                                  color=0xFFA500)
+            await ctx.send(embed=embed)
 
     @commands.command()
     async def actions(self, ctx, user=None):
