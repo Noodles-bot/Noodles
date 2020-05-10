@@ -162,10 +162,10 @@ class Fun(commands.Cog):
             BytesIO(requests.get('https://heidelblog.net/wp-content/uploads/2013/12/spanking.jpg').content))
         meme = meme.resize((640, 480), PIL.Image.ANTIALIAS)
 
-        victim = PIL.Image.open(BytesIO(requests.get(ctx.author.avatar_url).content))
+        victim = PIL.Image.open(BytesIO(requests.get(user.avatar_url).content))
         victim = victim.resize((140, 140), PIL.Image.ANTIALIAS)
 
-        user = PIL.Image.open(BytesIO(requests.get(user.avatar_url).content))
+        user = PIL.Image.open(BytesIO(requests.get(ctx.author.avatar_url).content))
         user = user.resize((140, 140), PIL.Image.ANTIALIAS)
 
         mask_im = PIL.Image.new("L", user.size, 0)
