@@ -127,10 +127,12 @@ class Fun(commands.Cog):
                 'https://api.imgflip.com/caption_image?'
                 'template_id=112126428'
                 f'&username=DankDumpster&password={password}&text0={arg1}&text1={arg2}'
+                f'font=arial'
         ) as resp:
             data = await resp.json()
         if data['success']:
             await ctx.send(embed=discord.Embed().set_image(url=data['data']['url']))
+            await ctx.send(data['data']['url'])
         else:
             await ctx.send(data['error_message'])
 
