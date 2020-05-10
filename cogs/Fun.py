@@ -158,6 +158,7 @@ class Fun(commands.Cog):
     @commands.command()
     async def spank(self, ctx, user: discord.Member = None):
         user = user or ctx.author
+
         meme = PIL.Image.open(
             BytesIO(requests.get('https://heidelblog.net/wp-content/uploads/2013/12/spanking.jpg').content))
         meme = meme.resize((640, 480), PIL.Image.ANTIALIAS)

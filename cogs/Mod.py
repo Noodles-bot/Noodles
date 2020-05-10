@@ -1,6 +1,7 @@
+from asyncio import sleep
+
 import discord
 from discord.ext import commands
-from asyncio import sleep
 
 
 class Mod(commands.Cog):
@@ -9,7 +10,7 @@ class Mod(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    @commands.has_permissions(kick_members=True)
+    @commands.is_owner()
     async def kick(self, ctx, member: discord.Member, *, reason="No reason"):
         await member.kick(reason=reason)
         await ctx.send(f"{member.mention} was kicked by {ctx.author.mention}. [{reason}]")
