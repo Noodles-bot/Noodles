@@ -126,7 +126,7 @@ class Fun(commands.Cog):
         async with session.get(
                 'https://api.imgflip.com/caption_image?'
                 'template_id=112126428'
-                f'&username=DankDumpster&password={password}&text0={arg1}&text1={arg2}'
+                f'&username=DankDumpster&password={password}&text0={arg1}&text1={arg2}&'
                 f'font=arial'
         ) as resp:
             data = await resp.json()
