@@ -1,7 +1,10 @@
 import random
+from io import BytesIO
 
+import PIL
 import aiohttp
 import discord
+import requests
 from discord.ext import commands
 
 from utils.fun.data import fight_results, insults
@@ -135,6 +138,22 @@ class Fun(commands.Cog):
             await ctx.send(data['data']['url'])
         else:
             await ctx.send(data['error_message'])
+
+    @commands.command()
+    @commands.command()
+    async def hitler(self, ctx, user=None):
+        user = user or ctx.author
+        response = requests.get(user.avatar_url)
+        meme = PIL.Image.open('/images/memes/worse_than_hitler.jpg')
+        user = PIL.Image.open(BytesIO(response.content))
+        meme.paste(user)
+
+        arr = BytesIO()
+        meme.save(arr, format="png")
+        arr.seek(0)
+
+        file = discord.File(arr)
+        await ctx.send(file=file)
 
 
 def setup(bot):
