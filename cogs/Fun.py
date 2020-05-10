@@ -144,7 +144,7 @@ class Fun(commands.Cog):
     async def hitler(self, ctx, user=None):
         user = user or ctx.author
         meme = PIL.Image.open(BytesIO(requests.get('https://i.imgflip.com/2kycbm.jpg').content))
-        meme = meme.resize((1280, 959), PIL.Image.ANTIALIAS)
+        meme = meme.resize((640, 480), PIL.Image.ANTIALIAS)
         user = PIL.Image.open(BytesIO(requests.get(user.avatar_url).content))
         user = user.resize(())
         meme.paste(user)
@@ -154,6 +154,7 @@ class Fun(commands.Cog):
         arr.seek(0)
 
         file = discord.File(arr)
+        await ctx.send(file)
         await ctx.send(file=file)
 
 
