@@ -142,7 +142,7 @@ class Fun(commands.Cog):
     @commands.command()
     async def hitler(self, ctx, user: discord.Member = None):
         user = user or ctx.author
-        meme = PIL.Image.open(BytesIO(requests.get('https://i.ytimg.com/vi/9GdqiiH3AvI/hqdefault.jpg').content))
+        meme = PIL.Image.open(BytesIO(requests.get('https://i.imgflip.com/2kycbm.jpg').content))
         meme = meme.resize((640, 480), PIL.Image.ANTIALIAS)
         user = PIL.Image.open(BytesIO(requests.get(user.avatar_url).content))
         user = user.resize((180, 180), PIL.Image.ANTIALIAS)
