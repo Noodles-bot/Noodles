@@ -124,8 +124,8 @@ class Fun(commands.Cog):
     @commands.is_owner()
     async def memegen(self, ctx, arg1, arg2):
         headers = {'template_id': 112126428,
-                   'username': img_username,
-                   'password': img_password,
+                   'username': 'DankDumpster',
+                   'password': password,
                    'text0': arg1,
                    'text1': arg2}
         async with session.get('https://api.imgflip.com/caption_image', headers=headers) as resp:
