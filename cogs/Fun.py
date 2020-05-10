@@ -146,7 +146,7 @@ class Fun(commands.Cog):
         meme = PIL.Image.open(BytesIO(requests.get('https://i.imgflip.com/2kycbm.jpg').content))
         meme = meme.resize((640, 480), PIL.Image.ANTIALIAS)
         user = PIL.Image.open(BytesIO(requests.get(user.avatar_url).content))
-        user = user.resize(())
+        user = user.resize((128, 128), PIL.Image.ANTIALIAS)
         meme.paste(user)
 
         arr = BytesIO()
