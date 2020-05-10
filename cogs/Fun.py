@@ -140,7 +140,7 @@ class Fun(commands.Cog):
             await ctx.send(data['error_message'])
 
     @commands.command()
-    @commands.command()
+    @commands.is_owner()
     async def hitler(self, ctx, user=None):
         user = user or ctx.author
         response = requests.get(user.avatar_url)
