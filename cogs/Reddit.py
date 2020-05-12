@@ -28,6 +28,7 @@ class Reddit(commands.Cog):
                                   username=username,
                                   password=password,
                                   user_agent=user_agent)
+        self.cat = 'https://lh3.googleusercontent.com/yY06WRzxSu2gW4fG-vvHtbMYPN5ZUSFvxfiXlikupyxHL1otn9lGAgS8Exdx_5oxjlvUdRBxlye_rQFnWzN8Ew8sPv31dnDr0X3gNTZ6Ys2Bqh8Q_ZdaJogZxtc-AT33nwFDpav0ZTiZ3qof-D4EyHLH4o6XjfpVipOPZTxBlxO4bLKwyDotc2BYO-r2f9V_g7ku7sFtlfGo35zhlLAcYKSnrj-nGaT_RiKLmf_HMsRJP5fP6VOJv9CrdxWzLJ-bVDo7bSXEO5RcDe-jVwP7LtU7ZqCCwRGmhINwPw1W7SZeYM9qWK3--J7WID4IuRodzZ7H5wHtEKunjRUMjBTP_V2JKHc6ezpcUviO06FCN3y_HtlqLuZl_GRJ8gSUMAWYP2XV4EeDmmAOUFHP2QbA_MIco3DxL-tB_HW__Zwn69phj7qyfpe3GHvICBiUqjiuIvL87QniNZZgtJg4hFaktD-XswM39wQAz7vmZb1vRpSrUldSi2Vsh1FMCmZqpn1yR44o428Ws_2UFTIhqkCGunJBop1-An1L2X7kevSTwmxgvCtTq2qwabRMUOoCSJZxDq4JehvkWXendXp6oPJ1GViCu46_6bSz_ZAwjGSR_ZsrsvMqpNMqyJd91YCI6_Pzjz1BZ_2bCq4fgWGg2_dot-3FQrrqIIdimqfB3eADDUuioK83hNwIVBjUV6vc5g=s720-no?authuser=0'
 
     @commands.command()
     async def membercount(self, ctx, subreddit):
@@ -77,7 +78,7 @@ class Reddit(commands.Cog):
             user = u[0][1]
         actions = []
         b = discord.Embed(title='Loading....', color=color)
-        b.set_image(url='https://acegif.com/wp-content/uploads/cat-typing-16.gif')
+        b.set_image(url=self.cat)
         msg = await ctx.send(embed=b)
         for log in self.reddit.subreddit('specialsnowflake').mod.log(limit=200000000, mod=user):
             if datetime.utcfromtimestamp(log.created_utc).month == datetime.now().month:
@@ -104,7 +105,7 @@ class Reddit(commands.Cog):
             user = u[0][1]
         user = self.reddit.redditor(user)
         b = discord.Embed(title='Loading....', color=color)
-        b.set_image(url='https://acegif.com/wp-content/uploads/cat-typing-16.gif')
+        b.set_image(url=self.cat)
         msg = await ctx.send(embed=b)
         await msg.edit(embed=discord.Embed(title=f'Total Karma: {user.link_karma + user.comment_karma:,}',
                                            description=f'Post karma:\n**{user.link_karma:,}**\n\nComment karma:\n**{user.comment_karma:,}**',
@@ -114,7 +115,7 @@ class Reddit(commands.Cog):
     async def redditstats(self, ctx, user=None):
 
         b = discord.Embed(title='Loading....', color=color)
-        b.set_image(url='https://acegif.com/wp-content/uploads/cat-typing-16.gif')
+        b.set_image(url=self.cat)
         msg = await ctx.send(embed=b)
 
         if user is None:
