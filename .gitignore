@@ -24,3 +24,5 @@ utils/secret.py
 utils/c++/cmake-build-debug/CMakeFiles/3.16.5/CompilerIdC/tmp/
 utils/c++/cmake-build-debug/CMakeFiles/3.16.5/CompilerIdCXX/tmp/
 utils/c++/cmake-build-debug/CMakeFiles/CMakeTmp/
+images/final/
+utils/Ubuntu.bat
