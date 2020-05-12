@@ -28,8 +28,7 @@ class Reddit(commands.Cog):
                                   username=username,
                                   password=password,
                                   user_agent=user_agent)
-        self.cat = 'https://lh3.googleusercontent.com/yY06WRzxSu2gW4fG-vvHtbMYPN5ZUSFvxfiXlikupyxHL1otn9lGAgS8Exdx_5oxjlvUdRBxlye_rQFnWzN8Ew8sPv31dnDr0X3gNTZ6Ys2Bqh8Q_ZdaJogZxtc-AT33nwFDpav0ZTiZ3qof-D4EyHLH4o6XjfpVipOPZTxBlxO4bLKwyDotc2BYO-r2f9V_g7ku7sFtlfGo35zhlLAcYKSnrj-nGaT_RiKLmf_HMsRJP5fP6VOJv9CrdxWzLJ-bVDo7bSXEO5RcDe-jVwP7LtU7ZqCCwRGmhINwPw1W7SZeYM9qWK3--J7WID4IuRodzZ7H5wHtEKunjRUMjBTP_V2JKHc6ezpcUviO06FCN3y_HtlqLuZl_GRJ8gSUMAWYP2XV4EeDmmAOUFHP2QbA_MIco3DxL-tB_HW__Zwn69phj7qyfpe3GHvICBiUqjiuIvL87QniNZZgtJg4hFaktD-XswM39wQAz7vmZb1vRpSrUldSi2Vsh1FMCmZqpn1yR44o428Ws_2UFTIhqkCGunJBop1-An1L2X7kevSTwmxgvCtTq2qwabRMUOoCSJZxDq4JehvkWXendXp6oPJ1GViCu46_6bSz_ZAwjGSR_ZsrsvMqpNMqyJd91YCI6_Pzjz1BZ_2bCq4fgWGg2_dot-3FQrrqIIdimqfB3eADDUuioK83hNwIVBjUV6vc5g=s720-no?authuser=0'
-
+        self.cat = 'https://media.giphy.com/media/E6jscXfv3AkWQ/giphy.gif'
     @commands.command()
     async def membercount(self, ctx, subreddit):
         await ctx.send(self.reddit.subreddit(subreddit).subscribers)
