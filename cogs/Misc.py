@@ -350,7 +350,7 @@ class Misc(commands.Cog):
         embed = discord.Embed(title='', type='rich', description=f'**{ctx.guild.name} | {ctx.guild.id}**', color=color)
         embed.set_thumbnail(url=ctx.guild.icon_url)
         embed.add_field(name='Main info',
-                        value=f'**Channels:** {text_channel} <:text_channel:696498775711154196> | {voice_channel} <:voice_channel:696498810721009725>\n'
+                        value=f'**Channels:** {text_channel} <:687064764421373954:703317109819572274> | {voice_channel} <:687064782167212165:703317110000189620> \n'
                               f'**Verification Level:** {ctx.guild.verification_level}\n'
                               f'**Features:** {features.lower().capitalize()}\n'
                               f'**Emotes:** {len(ctx.guild.emojis)}\n'

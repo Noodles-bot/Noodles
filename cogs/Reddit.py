@@ -29,6 +29,7 @@ class Reddit(commands.Cog):
                                   password=password,
                                   user_agent=user_agent)
         self.cat = 'https://media.giphy.com/media/E6jscXfv3AkWQ/giphy.gif'
+
     @commands.command()
     async def membercount(self, ctx, subreddit):
         await ctx.send(self.reddit.subreddit(subreddit).subscribers)
