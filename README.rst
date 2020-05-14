@@ -40,11 +40,11 @@ Create a secret.py file in utils/
    
 Roadmap
 -------
-- [x] Add an level system
-- [x] Add an economy 
-- [ ] Create levels with the PIL libary
-- [ ] Smooth database management
-- [ ] Documentation with flask or django
-- [ ] Public release
+- ☑ Add an level system
+- ☑ Add an economy 
+- ☐ Create levels with the PIL libary
+- ☐ Smooth database management
+- ☐ Documentation with flask or django
+- ☐ Public release
 
 
