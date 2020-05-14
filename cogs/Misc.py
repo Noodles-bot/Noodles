@@ -7,6 +7,7 @@ import time
 from datetime import datetime
 
 import aiohttp
+import cpuinfo
 import discord
 import googletrans
 import psutil
@@ -162,9 +163,13 @@ class Misc(commands.Cog):
         for index, value in enumerate(usage, 1):
             cpus.append(f'**Thread {index}**: {value}%')
 
+        info = cpuinfo.get_cpu_info()
         embed = discord.Embed(title='CPU info', color=color)
         embed.add_field(name='Main info:',
-                        value=f'**CPU cores: **{psutil.cpu_count(logical=False)}\n**CPU threads: **{psutil.cpu_count()}\n',
+                        value=f'**CPU:** {info["brand"]}\n'
+                              f'**CPU cores: **{psutil.cpu_count(logical=False)}\n'
+                              f'**CPU threads: **{psutil.cpu_count()}\n'
+                              f'**CPU frequency: **{info["hz_actual"]}',
                         inline=False)
         embed.add_field(name='CPU usage:',
                         value=f'**Average usage: **{psutil.cpu_percent(interval=1)}%\n\n' + '\n'.join(cpus),
@@ -347,6 +352,7 @@ class Misc(commands.Cog):
         text_channel = len([x for x in ctx.guild.channels if type(x) == discord.channel.TextChannel])
         voice_channel = len([x for x in ctx.guild.channels if type(x) == discord.channel.VoiceChannel])
         features = ','.join(ctx.guild.features)
+
         embed = discord.Embed(title='', type='rich', description=f'**{ctx.guild.name} | {ctx.guild.id}**', color=color)
         embed.set_thumbnail(url=ctx.guild.icon_url)
         embed.add_field(name='Main info',
