@@ -13,27 +13,22 @@ class Exurb(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.reddit = praw.Reddit(client_id=client_id,
+                                  client_secret=client_secret,
+                                  username=username,
+                                  password=password,
+                                  user_agent=user_agent)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        reddit = praw.Reddit(client_id=client_id,
-                             client_secret=client_secret,
-                             username=username,
-                             password=password,
-                             user_agent=user_agent)
         members = self.bot.get_channel(690125363170508906)
-        await members.edit(name=f"Sub members: {reddit.subreddit('exurb1a').subscribers}")
+        await members.edit(name=f"Sub members: {self.reddit.subreddit('exurb1a').subscribers}")
 
     @commands.command(hidden=True)
     @commands.is_owner()
     async def refresh(self, ctx):
-        reddit = praw.Reddit(client_id=client_id,
-                             client_secret=client_secret,
-                             username=username,
-                             password=password,
-                             user_agent=user_agent)
         members = self.bot.get_channel(690125363170508906)
-        await members.edit(name=f"Sub members: {reddit.subreddit('exurb1a').subscribers}")
+        await members.edit(name=f"Sub members: {self.reddit.subreddit('exurb1a').subscribers}")
         people = []
         id = str(ctx.guild.id)
         for user in ctx.guild.members:
@@ -72,8 +67,8 @@ class Exurb(commands.Cog):
                                           color=0xFF0000, timestamp=message.created_at)
                     false.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
                     true = discord.Embed(title='Jump link', url=message.jump_url,
-                                          description=message.content,
-                                          color=0x228B22, timestamp=message.created_at)
+                                         description=message.content,
+                                         color=0x228B22, timestamp=message.created_at)
                     true.set_author(name=message.author.display_name, icon_url=message.author.avatar_url)
                     while True:
                         if emoji == '<:check:694305541417336872>':
@@ -179,24 +174,6 @@ class Exurb(commands.Cog):
     
     and when it gives xp
     """
-
-    # TODO: do this
-
-
-"""
-    [send embed of message]
-    client.react(embed, :checkmark:)
-    client.react(embed, :x:)
-    
-    on_add_reaction:
-    if reaction==:checkmark: and message=embedFromBefore:
-      embed.colour=green
-      deleteAllReactions(embed)
-    elif reaction==:x: and message=embedFromBefore
-      embed.colour=red
-      message.delete(TheMessageThatTheJumpLinkDirectsTo(originial message))
-      deleteAllReactions(embed)
-"""
 
 
 def setup(bot):

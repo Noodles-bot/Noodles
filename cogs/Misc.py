@@ -158,6 +158,7 @@ class Misc(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def cpu(self, ctx):
+        """Gets info about the cpu"""
         cpus = []
         usage = psutil.cpu_percent(interval=1, percpu=True)
         for index, value in enumerate(usage, 1):
@@ -166,7 +167,7 @@ class Misc(commands.Cog):
         info = cpuinfo.get_cpu_info()
         embed = discord.Embed(title='CPU info', color=color)
         embed.add_field(name='Main info:',
-                        value=f'**CPU:** {info["brand"]}\n'
+                        value=f'**CPU:** {info["brand"].replace("(R)", "®")}\n'
                               f'**CPU cores: **{psutil.cpu_count(logical=False)}\n'
                               f'**CPU threads: **{psutil.cpu_count()}\n'
                               f'**CPU frequency: **{info["hz_actual"]}',
@@ -180,6 +181,7 @@ class Misc(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def ram(self, ctx):
+        """Gets info about the ram"""
         embed = discord.Embed(title='RAM info', color=color)
         embed.add_field(name='Main info:',
                         value=f'**Total RAM: **{round(psutil.virtual_memory().total / 1000000000, 2)}GB\n**Frequency: **Null',
