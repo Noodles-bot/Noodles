@@ -147,9 +147,8 @@ class Reddit(commands.Cog):
         banner = banner.split('?')[0]
         embed = discord.Embed(title=about['data']['subreddit']['title'], color=color)
         embed.set_thumbnail(url=icon)
-        if not trophies:
-            await ctx.send("No trophies")
-        embed.add_field(name='**Trophies**', value=''.join(sorted(set(trophies))), inline=False)
+        if trophies:
+            embed.add_field(name='**Trophies**', value=''.join(sorted(set(trophies))), inline=False)
         embed.set_author(name=about['data']['subreddit']['display_name_prefixed'],
                          url=f'https://www.reddit.com{about["data"]["subreddit"]["url"]}',
                          icon_url=banner)
