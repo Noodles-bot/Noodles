@@ -5,7 +5,7 @@ Noodles discord bot
    :target: https://discord.gg/Kzcr6pE
    :alt: Discord server invite
 
-Discord bot made by DankDumpster#5335 (357918459058978816)
+Discord bot made by DankDumpster#4806 (357918459058978816)
 
 .. code:: sh
 
