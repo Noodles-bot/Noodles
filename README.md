@@ -2,15 +2,7 @@
 <html lang="en"> 
    <body style="background-color:black;">
         <div>
-            <style>
-                div {
-                  position: fixed;
-                  top: 50%;
-                  left: 50%;
-                }</style>
             <h1>Noodles Bot</h1>
-        </div>
-        <div>
             <a href="https://discord.gg/Kzcr6pE">
                 <img src="https://discordapp.com/api/guilds/705526724783505518/embed.png"
                  alt="Markdown Monster icon"
