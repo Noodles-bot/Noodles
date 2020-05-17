@@ -5,7 +5,7 @@ Noodles discord bot
    :target: https://discord.gg/Kzcr6pE
    :alt: Discord server invite
 
-.. image:: https://discordbothub.com/widget/bot?id=432616859263827988
+.. image:: https://discordbothub.com/widget/bot?id=675542011457044512
    :target: https://discordbothub.com/bot?id=675542011457044512
    :alt: Noodles | Discord Bots Hub
 
