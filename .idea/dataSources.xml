@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="Noodles" uuid="55275000-064d-498b-aab6-61ff0911adee">
+    <data-source source="LOCAL" name="AWS Noodles" uuid="bed20473-fbd0-4ed6-aed3-c27fe32eaa28">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5432/Matt-O-Bot</jdbc-url>
+      <jdbc-url>jdbc:postgresql://noodles-bot.cimffc8jntkt.us-east-1.rds.amazonaws.com:5432/postgres</jdbc-url>
     </data-source>
   </component>
 </project>

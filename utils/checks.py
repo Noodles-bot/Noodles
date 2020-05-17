@@ -1,4 +1,3 @@
-import discord
 from discord.ext import commands
 
 
@@ -13,7 +12,7 @@ def is_owner_or_admin():
         elif ctx.author.id == 357918459058978816:
             return True
         else:
-            raise discord.Forbidden("You are missing administrator permissions to use this command")
+            return False
 
     return commands.check(predicate)
 
