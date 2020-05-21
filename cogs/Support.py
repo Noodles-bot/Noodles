@@ -52,7 +52,7 @@ class Support(commands.Cog):
                                              str(message.author.id))
             if db:
                 channel = self.bot.get_channel(db[0][0])
-                print(db)
+                print(channel)
                 await channel.send(f'**Anonymous user:** {message.content}')
 
 
