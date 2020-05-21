@@ -50,15 +50,18 @@ class Support(commands.Cog):
 
     @support_group.command()
     async def exit(self, ctx):
-        db = await self.bot.pg_con.fetch(
-            "SELECT user_id, channel_id FROM support WHERE helper_id = $1 OR user_id = $1",
-            str(ctx.author.id))
-        await self.bot.pg_con.execute("DELETE FROM support WHERE user_id = $1 OR helper_id = $1",
-                                      str(ctx.author.id))
-        user = await self.bot.fetch_user(int(db[0][0]))
-        channel = self.bot.get_channel(int(db[0][1]))
-        await user.send("Session was ended, I hope we were able to help you <:PepeHug:675713788967649290>")
-        await channel.send("Session ended")
+        try:
+            db = await self.bot.pg_con.fetch(
+                "SELECT user_id, channel_id FROM support WHERE helper_id = $1 OR user_id = $1",
+                str(ctx.author.id))
+            await self.bot.pg_con.execute("DELETE FROM support WHERE user_id = $1 OR helper_id = $1",
+                                          str(ctx.author.id))
+            user = await self.bot.fetch_user(int(db[0][0]))
+            channel = self.bot.get_channel(int(db[0][1]))
+            await user.send("Session was ended, I hope we were able to help you <:PepeHug:675713788967649290>")
+            await channel.send("Session ended")
+        except TypeError:
+            await ctx.send("Session already ended or your currently not in one")
 
     @support_group.command()
     @checks.is_owner_or_admin()
