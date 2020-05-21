@@ -37,7 +37,7 @@ class Support(commands.Cog):
                                                       category=ctx.channel.category)
         await self.bot.pg_con.execute("UPDATE support SET helper_id = $1, channel_id = $2 WHERE id = $3",
                                       str(ctx.author.id), str(channel.id), support_id)
-        user = self.bot.pg_con.fetch("SELECT user_id FROM support WHERE id = $1", support_id)
+        user = await self.bot.pg_con.fetch("SELECT user_id FROM support WHERE id = $1", support_id)
         user = self.bot.fetch_user(user[0][0])
         await user.send("Helper found!, you'll get trough this <3")
         await ctx.send("Accepted")
