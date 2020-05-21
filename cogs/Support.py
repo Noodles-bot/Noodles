@@ -44,7 +44,7 @@ class Support(commands.Cog):
         user = await self.bot.pg_con.fetch("SELECT user_id FROM support WHERE id = $1", support_id)
         user = await self.bot.fetch_user(user[0][0])
         channel = self.bot.get_channel(channel.id)
-        await user.send("Helper found!, you'll get trough this <3")
+        await user.send("Helper found!, you'll get through this <3")
         await ctx.send("Accepted")
         await channel.send(ctx.author.mention)
 
