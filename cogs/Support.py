@@ -51,6 +51,7 @@ class Support(commands.Cog):
         db = await self.bot.pg_con.fetch("SELECT channel_id FROM support WHERE user_id = $1", str(message.author.id))
         if db:
             channel = self.bot.get_channel(db[0][0])
+            print(db[0][0])
             await channel.send(f'**Anonymous user:** {message.content}')
 
 
