@@ -1,6 +1,6 @@
 
 <html lang="en"> 
-   <body style="background-color:black;">
+   <body style="background-color:floralwhite;">
         <div>
             <h1>Noodles Bot</h1>
             <a href="https://discord.gg/Kzcr6pE">
