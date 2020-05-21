@@ -35,7 +35,7 @@ class Support(commands.Cog):
         }
         await ctx.send("test")
         channel = await ctx.guild.create_text_channel(name=f"{support_id}({ctx.author.name})", overwrites=overwrites,
-                                                      category='support')
+                                                      category=ctx.channel.category)
         await ctx.send(channel)
         await self.bot.pg_con.execute("UPDATE support SET helper_id = $1 AND channel_id = $2 WHERE id = $3",
                                       str(ctx.author.id), str(channel.id), support_id)
