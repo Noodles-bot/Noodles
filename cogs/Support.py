@@ -33,10 +33,8 @@ class Support(commands.Cog):
             ctx.author: discord.PermissionOverwrite(read_messages=True),
             ctx.guild.me: discord.PermissionOverwrite(read_messages=True)
         }
-        await ctx.send("test")
         channel = await ctx.guild.create_text_channel(name=f"{support_id}-{ctx.author.name}", overwrites=overwrites,
                                                       category=ctx.channel.category)
-        await ctx.send(channel)
         await self.bot.pg_con.execute("UPDATE support SET helper_id = $1, channel_id = $2 WHERE id = $3",
                                       str(ctx.author.id), str(channel.id), support_id)
         user = self.bot.pg_con.fetch("SELECT user_id FROM support WHERE id = $1", support_id)
