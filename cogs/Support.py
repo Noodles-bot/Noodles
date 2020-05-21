@@ -60,6 +60,8 @@ class Support(commands.Cog):
         if message.guild is not None:
             db = await self.bot.pg_con.fetch("SELECT user_id FROM support WHERE helper_id = $1 AND channel_id = $2",
                                              str(message.author.id), str(message.channel.id))
+            print(db)
+            print(message.author)
             if db:
                 user = await self.bot.fetch_user(int(db[0][0]))
                 await user.send(f"**Helper:** {message.content}")
