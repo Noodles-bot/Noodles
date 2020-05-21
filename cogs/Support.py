@@ -33,6 +33,7 @@ class Support(commands.Cog):
             ctx.author: discord.PermissionOverwrite(read_messages=True),
             ctx.guild.me: discord.PermissionOverwrite(read_messages=True)
         }
+        await ctx.send("test")
         channel = await ctx.guild.create_text_channel(name=support_id + f"({ctx.author.name})", overwrites=overwrites,
                                                       category='support')
         await ctx.send(channel)
