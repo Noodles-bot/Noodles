@@ -78,7 +78,7 @@ class Support(commands.Cog):
     async def role(self, ctx, role: discord.Role):
         await self.bot.pg_con.execute('UPDATE guild_settings SET support_role = $1 WHERE guild_id = $2',
                                       str(role.id), str(ctx.guild.id))
-        await ctx.send(f"Updated help channel to {role.name}")
+        await ctx.send(f"Updated help role to {role.name}")
 
     @commands.Cog.listener(name='on_message')
     async def dm_listener(self, message):
