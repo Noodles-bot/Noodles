@@ -48,18 +48,16 @@ class Support(commands.Cog):
 
     @support_group.command()
     async def exit(self, ctx):
-        try:
-            db = await self.bot.pg_con.fetch(
-                "SELECT user_id, channel_id FROM support WHERE helper_id = $1 OR user_id = $1",
-                str(ctx.author.id))
-            await self.bot.pg_con.execute("DELETE FROM support WHERE user_id = $1 OR helper_id = $1",
-                                          str(ctx.author.id))
-            user = await self.bot.fetch_user(db[0][0])
-            channel = self.bot.get_channel(db[0][1])
-            await user.send("Session was ended, I hope we were able to help you <:PepeHug:675713788967649290>")
-            await channel.send("Session ended")
-        except:
-            await ctx.send("Already exited or currently not in a session")
+        db = await self.bot.pg_con.fetch(
+            "SELECT user_id, channel_id FROM support WHERE helper_id = $1 OR user_id = $1",
+            str(ctx.author.id))
+        await self.bot.pg_con.execute("DELETE FROM support WHERE user_id = $1 OR helper_id = $1",
+                                      str(ctx.author.id))
+        user = await self.bot.fetch_user(db[0][0])
+        channel = self.bot.get_channel(db[0][1])
+        print(channel)
+        await user.send("Session was ended, I hope we were able to help you <:PepeHug:675713788967649290>")
+        await channel.send("Session ended")
 
     @commands.Cog.listener(name='on_message')
     async def dm_listener(self, message):
