@@ -17,7 +17,7 @@ class Support(commands.Cog):
     async def support_group(self, ctx):
         await ctx.message.delete()
         support_id = str(uuid4())
-        ch = await self.bot.pg_con.fetch("SELECT support_channel FROM guild_settings WHERE guild_id = $1",
+        ch = await self.bot.pg_con.fetch("SELECT support_channel, support_role FROM guild_settings WHERE guild_id = $1",
                                          str(ctx.guild.id))
         await self.bot.pg_con.execute("INSERT INTO support (id, user_id, guild_id) "
                                       "VALUES ($1, $2, $3)", support_id, str(ctx.author.id), str(ctx.guild.id))
@@ -26,7 +26,7 @@ class Support(commands.Cog):
         embed = discord.Embed(title='Support needed!',
                               description=f'To talk use:\n{ctx.prefix}support accept {support_id}',
                               color=color)
-        await support_channel.send('<@357918459058978816> someone wants to talk!', embed=embed)
+        await support_channel.send(f'<@&{ch[0][1]}> someone wants to talk!', embed=embed)
         await ctx.author.send('A helper will be with you shortly')
 
     @support_group.command()
@@ -71,6 +71,14 @@ class Support(commands.Cog):
         await self.bot.pg_con.execute('UPDATE guild_settings SET support_channel = $1 WHERE guild_id = $2',
                                       str(channel.id), str(ctx.guild.id))
         await ctx.send(f"Updated help channel to {channel.mention}")
+
+    @support_group.command()
+    @checks.is_owner_or_admin()
+    @commands.guild_only()
+    async def role(self, ctx, role: discord.Role):
+        await self.bot.pg_con.execute('UPDATE guild_settings SET support_role = $1 WHERE guild_id = $2',
+                                      str(role.id), str(ctx.guild.id))
+        await ctx.send(f"Updated help channel to {role.name}")
 
     @commands.Cog.listener(name='on_message')
     async def dm_listener(self, message):
