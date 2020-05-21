@@ -17,7 +17,7 @@ class Support(commands.Cog):
         support_id = str(uuid4())
         await self.bot.pg_con.execute("INSERT INTO support (id, user_id, guild_id) "
                                       "VALUES ($1, $2, $3)", support_id, str(ctx.author.id), str(ctx.guild.id))
-        support_channel = self.bot.get_channel(712834556075442207)
+        support_channel = self.bot.get_channel(712836970229006357)
 
         embed = discord.Embed(title='Support needed!',
                               description=f'To talk use:\n{ctx.prefix}support accept {support_id}',
@@ -44,6 +44,14 @@ class Support(commands.Cog):
         await user.send("Helper found!, you'll get trough this <3")
         await ctx.send("Accepted")
         await channel.send(ctx.author.mention)
+
+    @commands.Cog.listener(name='on_message')
+    @commands.dm_only()
+    async def dm_listener(self, message):
+        db = await self.bot.pg_con.fetch("SELECT channel_id FROM support WHERE user_id = $1", str(message.author.id))
+        if db:
+            channel = self.bot.get_channel(db[0][0])
+            await channel.send(f'**Anonymous user:** {message.content}')
 
 
 def setup(bot):
