@@ -46,13 +46,14 @@ class Support(commands.Cog):
         await channel.send(ctx.author.mention)
 
     @commands.Cog.listener(name='on_message')
-    @commands.dm_only()
     async def dm_listener(self, message):
-        db = await self.bot.pg_con.fetch("SELECT channel_id FROM support WHERE user_id = $1", str(message.author.id))
-        if db:
-            channel = self.bot.get_channel(db[0][0])
-            print(db)
-            await channel.send(f'**Anonymous user:** {message.content}')
+        if message.guild is None:
+            db = await self.bot.pg_con.fetch("SELECT channel_id FROM support WHERE user_id = $1",
+                                             str(message.author.id))
+            if db:
+                channel = self.bot.get_channel(db[0][0])
+                print(db)
+                await channel.send(f'**Anonymous user:** {message.content}')
 
 
 def setup(bot):
