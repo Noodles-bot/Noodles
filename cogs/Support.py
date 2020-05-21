@@ -3,6 +3,7 @@ from uuid import uuid4
 import discord
 from discord.ext import commands
 
+from utils import checks
 from utils.fun.data import color
 
 
@@ -16,9 +17,11 @@ class Support(commands.Cog):
     async def support_group(self, ctx):
         await ctx.message.delete()
         support_id = str(uuid4())
+        ch = await self.bot.pg_con.fetch("SELECT support_channel FROM guild_settings WHERE guild_id = $1",
+                                         str(ctx.guild.id))
         await self.bot.pg_con.execute("INSERT INTO support (id, user_id, guild_id) "
                                       "VALUES ($1, $2, $3)", support_id, str(ctx.author.id), str(ctx.guild.id))
-        support_channel = self.bot.get_channel(712836970229006357)
+        support_channel = self.bot.get_channel(int(ch[0][0]))
 
         embed = discord.Embed(title='Support needed!',
                               description=f'To talk use:\n{ctx.prefix}support accept {support_id}',
@@ -56,6 +59,14 @@ class Support(commands.Cog):
         channel = self.bot.get_channel(int(db[0][1]))
         await user.send("Session was ended, I hope we were able to help you <:PepeHug:675713788967649290>")
         await channel.send("Session ended")
+
+    @support_group.command()
+    @checks.is_owner_or_admin()
+    @commands.guild_only()
+    async def channel(self, ctx, channel: discord.TextChannel):
+        await self.bot.pg_con.execute('UPDATE guild_settings SET support_channel = $1 WHERE guild_id = $2',
+                                      str(channel.id), str(ctx.guild.id))
+        await ctx.send(f"Updated help channel to {channel.mention}")
 
     @commands.Cog.listener(name='on_message')
     async def dm_listener(self, message):
