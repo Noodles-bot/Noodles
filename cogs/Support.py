@@ -54,7 +54,6 @@ class Support(commands.Cog):
                                       str(ctx.author.id))
         user = await self.bot.fetch_user(int(db[0][0]))
         channel = self.bot.get_channel(int(db[0][1]))
-        await ctx.send(db[0][1])
         await user.send("Session was ended, I hope we were able to help you <:PepeHug:675713788967649290>")
         await channel.send("Session ended")
 
