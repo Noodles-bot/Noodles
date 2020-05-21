@@ -14,6 +14,7 @@ class Support(commands.Cog):
     @commands.group(invoke_without_command=True, name='support', aliases=['chat'])
     @commands.guild_only()
     async def support_group(self, ctx):
+        await ctx.message.delete()
         support_id = str(uuid4())
         await self.bot.pg_con.execute("INSERT INTO support (id, user_id, guild_id) "
                                       "VALUES ($1, $2, $3)", support_id, str(ctx.author.id), str(ctx.guild.id))
