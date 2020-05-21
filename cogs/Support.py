@@ -60,6 +60,7 @@ class Support(commands.Cog):
             channel = self.bot.get_channel(int(db[0][1]))
             await user.send("Session was ended, I hope we were able to help you <:PepeHug:675713788967649290>")
             await channel.send("Session ended")
+            await channel.delete(reason="Session ended")
         except TypeError or IndexError:
             await ctx.send("Session already ended or your currently not in one")
 
