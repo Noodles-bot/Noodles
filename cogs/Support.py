@@ -23,7 +23,7 @@ class Support(commands.Cog):
                               description=f'To talk use:\n{ctx.prefix}support accept {support_id}',
                               color=color)
         await support_channel.send('<@357918459058978816> someone wants to talk!', embed=embed)
-        await ctx.author.send('A helper will be with your shortly')
+        await ctx.author.send('A helper will be with you shortly')
 
     @support_group.command()
     @commands.guild_only()
@@ -35,6 +35,7 @@ class Support(commands.Cog):
         }
         channel = await ctx.guild.create_text_channel(name=support_id + f"({ctx.author.name})", overwrites=overwrites,
                                                       category='support')
+        await ctx.send(channel)
         await self.bot.pg_con.execute("UPDATE support SET helper_id = $1 AND channel_id = $2 WHERE id = $3",
                                       str(ctx.author.id), str(channel.id), support_id)
         user = self.bot.pg_con.fetch("SELECT user_id FROM support WHERE id = $1", support_id)
