@@ -1,4 +1,4 @@
-from uuid import uuid4
+import random
 
 import discord
 from discord.ext import commands
@@ -16,7 +16,7 @@ class Support(commands.Cog):
     @commands.guild_only()
     async def support_group(self, ctx):
         await ctx.message.delete()
-        support_id = str(uuid4())
+        support_id = str(random.randint(10000, 99999))
         ch = await self.bot.pg_con.fetch("SELECT support_channel, support_role FROM guild_settings WHERE guild_id = $1",
                                          str(ctx.guild.id))
         await self.bot.pg_con.execute("INSERT INTO support (id, user_id, guild_id) "
