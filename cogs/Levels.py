@@ -2,6 +2,7 @@ from datetime import date
 from io import BytesIO
 
 import discord
+import requests
 from PIL import ImageDraw, Image
 from discord.ext import commands
 
@@ -92,7 +93,9 @@ class Levels(commands.Cog):
             xp_total = (4 * (user[0]['lvl'] ** 3)) / 5
             width = 590
             x = (xp / xp_total) * width
-            im = Image.open('../images/progress.png').convert('RGB')
+            im = Image.open(
+                BytesIO(requests.get('https://i.imgur.com/pHnwUqz.png').content)
+            )
             draw = ImageDraw.Draw(im)
             color = (255, 165, 0)
 
