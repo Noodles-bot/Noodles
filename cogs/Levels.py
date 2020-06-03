@@ -95,7 +95,7 @@ class Levels(commands.Cog):
             x = (xp / xp_total) * width
             im = Image.open(
                 BytesIO(requests.get('https://i.imgur.com/pHnwUqz.png').content)
-            )
+            ).convert("RGB")
             draw = ImageDraw.Draw(im)
             color = (255, 165, 0)
 
