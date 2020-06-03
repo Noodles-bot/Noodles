@@ -1,6 +1,8 @@
 from datetime import date
+from io import BytesIO
 
 import discord
+from PIL import ImageDraw, Image
 from discord.ext import commands
 
 
@@ -76,7 +78,7 @@ class Levels(commands.Cog):
 
     @bot.command(aliases=['lvl'])
     async def level(self, ctx, member: discord.Member = None):
-        member = ctx.author if not member else member
+        member = ctx.author or member
         author_id = str(member.id)
         guild_id = str(ctx.guild.id)
 
@@ -86,6 +88,26 @@ class Levels(commands.Cog):
         if not user:
             await ctx.send("Member doesn't have a level yet")
         else:
+            xp = user[0]['xp']
+            xp_total = (4 * (user[0]['lvl'] ** 3)) / 5
+            width = 590
+            x = (xp / xp_total) * width
+            im = Image.open('../images/progress.png').convert('RGB')
+            draw = ImageDraw.Draw(im)
+            color = (255, 165, 0)
+
+            x, y, diam = x, 8, 34
+            draw.ellipse([x, y, x + diam, y + diam], fill=color)
+
+            ImageDraw.floodfill(im, xy=(14, 24), value=color, thresh=40)
+
+            arr = BytesIO()
+            im.save(arr, format="PNG")
+            arr.seek(0)
+            file = discord.File(arr, filename="lvl.png")
+            await ctx.send(file=file)
+
+            """
             embed = discord.Embed(color=member.color)
 
             embed.set_author(name=f"Level - {member}", icon_url=member.avatar_url)
@@ -95,6 +117,7 @@ class Levels(commands.Cog):
             embed.set_footer(text=f"XP needed to level up: {round(((4 * (user[0]['lvl'] ** 3)) / 5) - user[0]['xp'])}")
 
             await ctx.send(embed=embed)
+            """
 
     @bot.command()
     async def leaderboard(self, ctx):
