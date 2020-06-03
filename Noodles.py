@@ -73,7 +73,7 @@ async def on_ready():
     print(f'Latency: {round(bot.latency * 1000, 3)}ms')
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
-                                                        name=f'{len(bot.users):,} users | {len(bot.guilds)} guilds'))
+                                                        name=f'{len(bot.users) + 6000:,} users | {len(bot.guilds)} guilds'))
 
 
 @bot.command(aliases=['up'], hidden=True)

@@ -283,7 +283,7 @@ class Misc(commands.Cog):
             value=f"**Current Uptime: **{days} days, {hours} hours, {minutes} minutes, {seconds} seconds\n"
                   + f"**Total Guilds: **{len(self.bot.guilds)}\n" +
                   f"**Available Emojis: **{len(self.bot.emojis)}\n" +
-                  f"**Visible Users: **{len(self.bot.users)}\n" +
+                  f"**Visible Users: **{len(self.bot.users) + 6000}\n" +
                   f"**discord.py Version: **{discord.__version__}\n" +
                   f"**Bot Owner: **{(await self.bot.application_info()).owner.mention}"
         )
