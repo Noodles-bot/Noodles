@@ -92,7 +92,7 @@ class Levels(commands.Cog):
             xp_total = (4 * (user[0]['lvl'] ** 3)) / 5
             width = 590
             x = (xp / xp_total) * width
-            im = Image.open('./progress.png').convert('RGB')
+            im = Image.open('../images/progress.png').convert('RGB')
             draw = ImageDraw.Draw(im)
             color = (255, 165, 0)
 
