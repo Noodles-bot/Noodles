@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
 
-from utils.fun.data import color
 from utils import checks
+from utils.fun.data import color
 
 
 class Star(commands.Cog):
@@ -28,6 +28,23 @@ class Star(commands.Cog):
     async def enabled(self, guild_id):
         i = await self.bot.pg_con.fetch("SELECT starboard, guild_id FROM guild_settings WHERE guild_id = $1", guild_id)
         return i[0][0]
+
+    async def reaction_action(self, fmt, payload, guild):
+        if str(payload.emoji) != await self.get_emote(guild_id=guild.id):
+            return
+
+        channel = self.bot.get_channel(payload.channel_id)
+        if not isinstance(channel, discord.TextChannel):
+            return
+
+        user = self.bot.get_user(payload.user_id)
+        if user is None or user.bot:
+            return
+
+        if fmt.lower() == 'star':
+            await self.bot.pg_con.execute()
+        elif fmt.lower() == 'unstar':
+            pass
 
     @commands.guild_only()
     @commands.group(name='star')
@@ -115,6 +132,61 @@ class Star(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.guild_only()
+    @commands.Cog.listener(name="on_raw_reaction_add")
+    async def star_event(self, reaction, user):
+        if (reaction.emoji == await self.get_emote(guild_id=str(user.guild.id))) \
+                and (await self.enabled(guild_id=str(user.guild.id))) \
+                and (reaction.count >= await self.get_amt(guild_id=str(user.guild.id))):
+            id = await self.get_channel(guild_id=str(user.guild.id))
+
+            if id == '0':
+                chnl = discord.utils.get(user.guild.channels, name="starboard")
+            else:
+                chnl = self.bot.get_channel(int(id))
+
+            star_list = await self.bot.pg_con.fetch("SELECT * FROM starboard WHERE message_id = $1",
+                                                    str(reaction.message.id))
+
+            if star_list is not None:
+
+                emote = await self.get_emote(guild_id=str(user.guild.id))
+                e = discord.Embed(title='',
+                                  description=reaction.message.content, color=color,
+                                  timestamp=reaction.message.created_at)
+                e.set_author(name=f"{reaction.message.author}", icon_url=reaction.message.author.avatar_url)
+
+                if reaction.message.attachments:
+                    e.set_image(url=reaction.message.attachments[0].url)
+                e.set_footer(text=reaction.message.id)
+                db = await self.bot.pg_con.fetch("SELECT bot_message_id,  FROM starboard WHERE message_id = $1",
+                                                 str(reaction.message.id))
+
+                msg = await self.bot.get_message()
+
+                await msg.edit(content=f'{emote} {reaction.count} {reaction.message.channel.mention}')
+                return
+
+            emote = await self.get_emote(guild_id=str(user.guild.id))
+
+            # self.message_list.append((user.guild.id, reaction.message.id))
+            e = discord.Embed(title='Jump link', url=reaction.message.jump_url,
+                              description=reaction.message.content, color=color,
+                              timestamp=reaction.message.created_at)
+            e.set_author(name=f"{reaction.message.author}", icon_url=reaction.message.author.avatar_url)
+
+            if reaction.message.attachments:
+                e.set_image(url=reaction.message.attachments[0].url)
+
+            e.set_footer(text=reaction.message.id)
+            msg = await chnl.send(f'{emote} {reaction.count} {reaction.message.channel.mention}', embed=e)
+            # self.original_message.update({f"{reaction.message.id}": msg})
+            await self.bot.pg_con.execute(
+                "INSERT INTO starboard(message_id, guild_id, author_id, bot_message_id, star_amount) "
+                "VALUES ($1, $2, $3, $4, $5)",
+                str(reaction.message.id), str(reaction.message.guild.id), str())
+
+    """
+    @commands.guild_only()
     @commands.Cog.listener(name="on_reaction_add")
     async def star_event(self, reaction, user):
         if reaction.emoji == await self.get_emote(guild_id=str(user.guild.id)):
@@ -156,6 +228,7 @@ class Star(commands.Cog):
                     e.set_footer(text=reaction.message.id)
                     msg = await chnl.send(f'{emote} {reaction.count} {reaction.message.channel.mention}', embed=e)
                     self.original_message.update({f"{reaction.message.id}": msg})
+    """
 
 
 def setup(bot):
