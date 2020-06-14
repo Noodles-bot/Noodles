@@ -72,7 +72,7 @@ class Star(commands.Cog):
     @star.command(name='emote')
     @checks.is_owner_or_admin()
     async def star_emote(self, ctx, emote):
-        await self.bot.pg_con("UPDATE guild_settings SET star_emote = $1 WHERE guild_id = $2", emote, str(ctx.guild.id))
+        await self.bot.pg_con.execute("UPDATE guild_settings SET star_emote = $1 WHERE guild_id = $2", emote, str(ctx.guild.id))
         await ctx.send(f"Set the emote to {emote}")
 
     @star.command(name='channel')
