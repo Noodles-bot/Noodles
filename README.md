@@ -1,4 +1,4 @@
-
+[![Netlify Status](https://api.netlify.com/api/v1/badges/793133b4-e325-4d64-a62c-162608fb0720/deploy-status)](https://app.netlify.com/sites/noodles-bot/deploys)
 <html lang="en"> 
    <body style="background-color:floralwhite;">
         <div>
