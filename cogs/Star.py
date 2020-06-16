@@ -158,8 +158,10 @@ class Star(commands.Cog):
                 if reaction.message.attachments:
                     e.set_image(url=reaction.message.attachments[0].url)
                 e.set_footer(text=reaction.message.id)
-                db = await self.bot.pg_con.fetch("SELECT bot_message_id,  FROM starboard WHERE message_id = $1",
-                                                 str(reaction.message.id))
+                db = await self.bot.pg_con.fetch(
+                    "SELECT bot_message_id, channel_id FROM starboard WHERE message_id = $1",
+                    str(reaction.message.id))
+                channel = self.bot.get_channel(int(db[0][1]))
 
                 msg = await self.bot.get_message()
 
@@ -181,9 +183,10 @@ class Star(commands.Cog):
             msg = await chnl.send(f'{emote} {reaction.count} {reaction.message.channel.mention}', embed=e)
             # self.original_message.update({f"{reaction.message.id}": msg})
             await self.bot.pg_con.execute(
-                "INSERT INTO starboard(message_id, guild_id, author_id, bot_message_id, star_amount) "
-                "VALUES ($1, $2, $3, $4, $5)",
-                str(reaction.message.id), str(reaction.message.guild.id), str())
+                "INSERT INTO starboard(message_id, guild_id, author_id, bot_message_id, star_amount, channel_id) "
+                "VALUES ($1, $2, $3, $4, $5, $6)",
+                str(reaction.message.id), str(reaction.message.guild.id), str(reaction.message.author.id),
+                str(msg.id), )
 
     """
     @commands.guild_only()

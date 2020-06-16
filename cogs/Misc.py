@@ -375,7 +375,7 @@ class Misc(commands.Cog):
     async def invite(self, ctx):
         """Sends an invite to add the bot"""
         await ctx.send(
-            'https://discordapp.com/api/oauth2/authorize?client_id=675542011457044512&permissions=2147483639&scope=bot')
+            'http://invite.noodles-bot.live/')
 
     @commands.command(aliases=['trans'])
     async def translate(self, ctx, *, message: commands.clean_content):
