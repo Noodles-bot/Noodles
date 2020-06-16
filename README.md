@@ -1,10 +1,14 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/793133b4-e325-4d64-a62c-162608fb0720/deploy-status)](https://app.netlify.com/sites/noodles-bot/deploys)
 <html lang="en"> 
    <body style="background-color:floralwhite;">
         <div>
             <h1>Noodles Bot</h1>
             <a href="https://discord.gg/Kzcr6pE">
                 <img src="https://discordapp.com/api/guilds/705526724783505518/embed.png"
+                 alt="Markdown Monster icon"
+                 style="float: left; margin-right: 10px;" />
+            </a>
+            <a href="https://app.netlify.com/sites/noodles-bot/deploys">
+                <img src="https://api.netlify.com/api/v1/badges/793133b4-e325-4d64-a62c-162608fb0720/deploy-status"
                  alt="Markdown Monster icon"
                  style="float: left; margin-right: 10px;" />
             </a>
