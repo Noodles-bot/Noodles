@@ -8,7 +8,7 @@ from utils.fun.data import color
 
 
 class Support(commands.Cog):
-
+    # TODO: Switch support to mongodb
     def __init__(self, bot):
         self.bot = bot
 

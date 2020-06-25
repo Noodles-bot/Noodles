@@ -159,7 +159,6 @@ class Exurb(commands.Cog):
         else:
             await ctx.send(f"User {user.mention} is already in the watchlist")
 
-    # TODO: make scoring system for this server
     """
     Commands:
     ,level add @role (xp)

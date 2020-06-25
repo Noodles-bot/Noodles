@@ -6,6 +6,7 @@ from utils.fun.data import color
 
 
 class Star(commands.Cog):
+    # TODO: change starboard to mongodb
     def __init__(self, bot):
         self.bot = bot
         self.message_list = []

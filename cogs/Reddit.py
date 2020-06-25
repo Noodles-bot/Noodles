@@ -20,7 +20,7 @@ async def q(subreddit):
 
 
 class Reddit(commands.Cog):
-
+    # TODO: Switch reddit to mongodb
     def __init__(self, bot):
         self.bot = bot
         self.reddit = praw.Reddit(client_id=client_id,

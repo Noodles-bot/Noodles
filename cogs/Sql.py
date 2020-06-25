@@ -2,7 +2,7 @@ from discord.ext import commands
 
 
 class Sql(commands.Cog):
-
+    # TODO: Switch queries to mongodb
     def __init__(self, bot):
         self.bot = bot
 

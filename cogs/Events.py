@@ -43,6 +43,7 @@ class Events(commands.Cog):
             except discord.errors.Forbidden:
                 pass
 
+    # TODO: Switch on_guild_join to mongodb
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         g = await self.bot.pg_con.fetch("SELECT * FROM guild_settings WHERE guild_id = $1", str(guild.id))

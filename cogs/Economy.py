@@ -18,7 +18,7 @@ def randomnumber(num1: int, num2: int):
 
 
 class Economy(commands.Cog):
-
+    # TODO: Switch economy to mongodb
     def __init__(self, bot):
         self.bot = bot
 

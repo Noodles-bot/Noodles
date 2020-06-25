@@ -167,6 +167,7 @@ class Owner(commands.Cog):
         except Exception as err:
             await ctx.send(err)
 
+    # TODO: Switch set_money to mongodb
     @commands.command(aliases=['setmoney'])
     @checks.is_owner_or_admin()
     async def set_money(self, ctx, *, name):
