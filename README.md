@@ -12,6 +12,11 @@
                  alt="Markdown Monster icon"
                  style="float: left; margin-right: 10px;" />
             </a>
+           <a href="https://dev.azure.com/DankDumpster/Noodles-live/_build/latest?definitionId=1&branchName=typescript">
+                <img src="https://dev.azure.com/DankDumpster/Noodles-live/_apis/build/status/DankDumpster.vue-noodles-live?branchName=typescript"
+                 alt="Markdown Monster icon"
+                 style="float: left; margin-right: 10px;" />
+            </a>
                 <p>Discord bot made by DankDumpster#4806 (357918459058978816)</p>
                 <code>git clone https://github.com/DankDumpster/Noodles</code>
             <h2>Requirements</h2>
