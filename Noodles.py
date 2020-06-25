@@ -34,8 +34,7 @@ print(logo)
 
 async def create_db_pool():
     bot.pg_con = await asyncpg.create_pool(
-        dsn=DATABASE,
-        min_size=1, max_size=5)
+        dsn=DATABASE)
 
 
 async def get_prefix(bot, message):
