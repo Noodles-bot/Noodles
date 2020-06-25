@@ -3,8 +3,8 @@ import subprocess
 import sys
 from datetime import datetime
 
-import asyncpg
 import discord
+import motor.motor_asyncio
 from discord.ext import commands
 
 from utils.secret import *
@@ -33,23 +33,30 @@ print(logo)
 
 
 async def create_db_pool():
-    bot.pg_con = await asyncpg.create_pool(
-        dsn=DATABASE)
+    client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE)
+    bot.conn = client.noodles
 
 
 async def get_prefix(bot, message):
     if not message.guild:
         return commands.when_mentioned_or(",")(bot, message)
 
-    prefixes = await bot.pg_con.fetch("SELECT prefix, guild_id FROM guild_settings WHERE guild_id = $1",
-                                      str(message.guild.id))
+    prefixes = await bot.conn.guilds.find_one({"guild_id": str(message.guild.id)})
 
     if not prefixes:
-        await bot.pg_con.execute("INSERT INTO guild_settings (guild_id) VALUES ($1)", str(message.guild.id))
+        document = {
+            "guild_id": str(message.guild.id),
+            "settings": {
+                "prefix": "n?",
+                "tips": False,
+                "money": "🍜"
+            }
+        }
+        await bot.conn.guilds.insert_one(document)
 
-    prefixes = await bot.pg_con.fetch("SELECT prefix, guild_id FROM guild_settings WHERE guild_id = $1",
-                                      str(message.guild.id))
-    prefix = prefixes[0][0]
+    prefixes = await bot.conn.guilds.find_one({"guild_id": str(message.guild.id)})
+    prefix = prefixes['settings']['prefix']
+
     return commands.when_mentioned_or(prefix)(bot, message)
 
 

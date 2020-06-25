@@ -7,5 +7,11 @@
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://noodles-bot.cimffc8jntkt.us-east-1.rds.amazonaws.com:5432/postgres</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="atlas" uuid="87b6e6b7-adf2-4c2d-a3d7-63f50db5c2f5">
+      <driver-ref>mongo</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
+      <jdbc-url>mongodb+srv://matthew-cluster-bdei1.azure.mongodb.net</jdbc-url>
+    </data-source>
   </component>
 </project>
