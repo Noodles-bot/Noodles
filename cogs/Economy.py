@@ -30,13 +30,13 @@ class Economy(commands.Cog):
                                             str(ctx.guild.id))
         money = money[0][0]
         return money
-
+    """
     @commands.Cog.listener(name='on_message')
     async def db_insert(self, ctx):
         i = await self.bot.pg_con.fetch("SELECT * FROM waifu WHERE user_id = $1", str(ctx.author.id))
         if not i:
             await self.bot.pg_con.execute("INSERT INTO waifu (user_id) VALUES ($1)", str(ctx.author.id))
-
+    """
     async def claimed_by(self, user_id):
         i = await self.bot.pg_con.fetch("SELECT claimed_id, price FROM waifu WHERE user_id = $1", user_id)
         return i[0][0]
@@ -191,6 +191,7 @@ class Economy(commands.Cog):
                 await sql.withbank(amount=int(amount), author_id=str(ctx.author.id))
                 await ctx.send(f'Withdrawn **{amount}** {money_name} from bank')
 
+    """
     @commands.Cog.listener()
     async def on_command(self, ctx):
         sql = self.bot.get_cog('Sql')
@@ -201,6 +202,7 @@ class Economy(commands.Cog):
             user = await sql.getbank(author_id=str(ctx.author.id))
             await self.bot.pg_con.execute("UPDATE bank SET bankxp = $1 WHERE user_id = $2", user['bankxp'] + 1,
                                           str(ctx.author.id))
+    """
 
     @commands.command()
     @commands.cooldown(1, 60, commands.BucketType.user)

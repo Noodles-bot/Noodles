@@ -43,12 +43,25 @@ class Events(commands.Cog):
             except discord.errors.Forbidden:
                 pass
 
-    # TODO: Switch on_guild_join to mongodb
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        g = await self.bot.pg_con.fetch("SELECT * FROM guild_settings WHERE guild_id = $1", str(guild.id))
+        g = await self.bot.conn.guilds.find_one({"guild_id": str(guild.id)})
         if not g:
-            await self.bot.pg_con.fetch("INSERT INTO guild_settings (guild_id) VALUES ($1)", str(guild.id))
+            document = {
+                "guild_id": str(guild.id),
+                "settings": {
+                    "starboard": {
+                        "enabled": False,
+                        "amount": 5,
+                        "emote": "⭐",
+                        "channel": None
+                    },
+                    "prefix": "n?",
+                    "tips": False,
+                    "money": ":ramen:"
+                }
+            }
+            await self.bot.conn.guilds.insert_one(document)
 
     @commands.command(hidden=True)
     @commands.is_owner()

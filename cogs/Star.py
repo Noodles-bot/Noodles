@@ -6,46 +6,27 @@ from utils.fun.data import color
 
 
 class Star(commands.Cog):
-    # TODO: change starboard to mongodb
+
     def __init__(self, bot):
         self.bot = bot
         self.message_list = []
         self.original_message = {}
 
     async def get_amt(self, guild_id):
-        i = await self.bot.pg_con.fetch("SELECT star_amount, guild_id FROM guild_settings WHERE guild_id = $1",
-                                        guild_id)
-        return i[0][0]
+        i = await self.bot.conn.guilds.fetch_one({"guild_id": str(guild_id)})
+        return i['settings']['starboard']['amount']
 
     async def get_channel(self, guild_id):
-        i = await self.bot.pg_con.fetch("SELECT star_channel, guild_id FROM guild_settings WHERE guild_id = $1",
-                                        guild_id)
-        return i[0][0]
+        i = await self.bot.conn.guilds.fetch_one({"guild_id": str(guild_id)})
+        return i['settings']['starboard']['channel']
 
     async def get_emote(self, guild_id):
-        i = await self.bot.pg_con.fetch("SELECT star_emote, guild_id FROM guild_settings WHERE guild_id = $1", guild_id)
-        return i[0][0]
+        i = await self.bot.conn.guilds.fetch_one({"guild_id": str(guild_id)})
+        return i['settings']['starboard']['emote']
 
     async def enabled(self, guild_id):
-        i = await self.bot.pg_con.fetch("SELECT starboard, guild_id FROM guild_settings WHERE guild_id = $1", guild_id)
-        return i[0][0]
-
-    async def reaction_action(self, fmt, payload, guild):
-        if str(payload.emoji) != await self.get_emote(guild_id=guild.id):
-            return
-
-        channel = self.bot.get_channel(payload.channel_id)
-        if not isinstance(channel, discord.TextChannel):
-            return
-
-        user = self.bot.get_user(payload.user_id)
-        if user is None or user.bot:
-            return
-
-        if fmt.lower() == 'star':
-            await self.bot.pg_con.execute()
-        elif fmt.lower() == 'unstar':
-            pass
+        i = await self.bot.conn.guilds.fetch_one({"guild_id": str(guild_id)})
+        return i['settings']['starboard']['enabled']
 
     @commands.guild_only()
     @commands.group(name='star')
@@ -66,44 +47,53 @@ class Star(commands.Cog):
     @star.command(name='amount')
     @checks.is_owner_or_admin()
     async def star_amount(self, ctx, amount: int):
-        await self.bot.pg_con.execute("UPDATE guild_settings SET star_amount = $1 WHERE guild_id = $2", amount,
-                                      str(ctx.guild.id))
+        await self.bot.conn.guilds.update_one(
+            {"guild_id": str(ctx.guild.id)}, {"$set": {"settings.starboard.amount": amount}}
+        )
         await ctx.send(f'Set the star amount to {amount} {await self.get_emote(guild_id=str(ctx.guild.id))}')
 
     @star.command(name='emote')
     @checks.is_owner_or_admin()
     async def star_emote(self, ctx, emote):
-        await self.bot.pg_con.execute("UPDATE guild_settings SET star_emote = $1 WHERE guild_id = $2", emote, str(ctx.guild.id))
+        await self.bot.conn.guilds.update_one(
+            {"guild_id": str(ctx.guild.id)}, {"$set": {"settings.starboard.emote": emote}}
+        )
         await ctx.send(f"Set the emote to {emote}")
 
     @star.command(name='channel')
     @checks.is_owner_or_admin()
     async def star_channel(self, ctx, channel: discord.TextChannel):
-        await self.bot.pg_con.execute("UPDATE guild_settings SET star_channel = $1 WHERE guild_id = $2",
-                                      str(channel.id), str(ctx.guild.id))
+        await self.bot.conn.guilds.update_one(
+            {"guild_id": str(ctx.guild.id)}, {"$set": {"settings.starboard.channel": str(channel.id)}}
+        )
         await ctx.send(f"Set the channel to {channel.mention}")
 
     @star.command(name='enable')
     @checks.is_owner_or_admin()
     async def star_enable(self, ctx):
-        i = await self.bot.pg_con.fetch("SELECT starboard FROM guild_settings WHERE guild_id = $1", str(ctx.guild.id))
-        if i is True:
+        i = await self.bot.conn.guilds.fetch_one({"guild_id": str(ctx.guild.id)})
+
+        if i['settings']['starboard']['enabled']:
             await ctx.send("Starboard already enabled")
             return
-        await self.bot.pg_con.execute("UPDATE guild_settings SET starboard = TRUE WHERE guild_id = $1",
-                                      str(ctx.guild.id))
-        await ctx.send("Enabled starboard for this guild")
+        else:
+            await self.bot.conn.guilds.update_one(
+                {"guild_id": str(ctx.guild.id)}, {"$set": {"settings.starboard.enabled": True}}
+            )
+            await ctx.send("Enabled starboard for this guild")
 
     @star.command(name='disable')
     @checks.is_owner_or_admin()
     async def star_disable(self, ctx):
-        i = await self.bot.pg_con.fetch("SELECT starboard FROM guild_settings WHERE guild_id = $1", str(ctx.guild.id))
-        if i is False:
+        i = await self.bot.conn.guilds.fetch_one({"guild_id": str(ctx.guild.id)})
+        if not i['settings']['starboard']['enabled']:
             await ctx.send("Starboard already disabled")
             return
-        await self.bot.pg_con.execute("UPDATE guild_settings SET starboard = FALSE WHERE guild_id = $1",
-                                      str(ctx.guild.id))
-        await ctx.send("Disabled starboard for this guild")
+        else:
+            await self.bot.conn.guilds.update_one(
+                {"guild_id": str(ctx.guild.id)}, {"$set": {"settings.starboard.enabled": False}}
+            )
+            await ctx.send("Disabled starboard for this guild")
 
     @star.command(name='settings')
     @checks.is_owner_or_admin()
@@ -132,64 +122,6 @@ class Star(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.guild_only()
-    @commands.Cog.listener(name="on_raw_reaction_add")
-    async def star_event(self, reaction, user):
-        if (reaction.emoji == await self.get_emote(guild_id=str(user.guild.id))) \
-                and (await self.enabled(guild_id=str(user.guild.id))) \
-                and (reaction.count >= await self.get_amt(guild_id=str(user.guild.id))):
-            id = await self.get_channel(guild_id=str(user.guild.id))
-
-            if id == '0':
-                chnl = discord.utils.get(user.guild.channels, name="starboard")
-            else:
-                chnl = self.bot.get_channel(int(id))
-
-            star_list = await self.bot.pg_con.fetch("SELECT * FROM starboard WHERE message_id = $1",
-                                                    str(reaction.message.id))
-
-            if star_list is not None:
-
-                emote = await self.get_emote(guild_id=str(user.guild.id))
-                e = discord.Embed(title='',
-                                  description=reaction.message.content, color=color,
-                                  timestamp=reaction.message.created_at)
-                e.set_author(name=f"{reaction.message.author}", icon_url=reaction.message.author.avatar_url)
-
-                if reaction.message.attachments:
-                    e.set_image(url=reaction.message.attachments[0].url)
-                e.set_footer(text=reaction.message.id)
-                db = await self.bot.pg_con.fetch(
-                    "SELECT bot_message_id, channel_id FROM starboard WHERE message_id = $1",
-                    str(reaction.message.id))
-                channel = self.bot.get_channel(int(db[0][1]))
-
-                msg = await self.bot.get_message()
-
-                await msg.edit(content=f'{emote} {reaction.count} {reaction.message.channel.mention}')
-                return
-
-            emote = await self.get_emote(guild_id=str(user.guild.id))
-
-            # self.message_list.append((user.guild.id, reaction.message.id))
-            e = discord.Embed(title='Jump link', url=reaction.message.jump_url,
-                              description=reaction.message.content, color=color,
-                              timestamp=reaction.message.created_at)
-            e.set_author(name=f"{reaction.message.author}", icon_url=reaction.message.author.avatar_url)
-
-            if reaction.message.attachments:
-                e.set_image(url=reaction.message.attachments[0].url)
-
-            e.set_footer(text=reaction.message.id)
-            msg = await chnl.send(f'{emote} {reaction.count} {reaction.message.channel.mention}', embed=e)
-            # self.original_message.update({f"{reaction.message.id}": msg})
-            await self.bot.pg_con.execute(
-                "INSERT INTO starboard(message_id, guild_id, author_id, bot_message_id, star_amount, channel_id) "
-                "VALUES ($1, $2, $3, $4, $5, $6)",
-                str(reaction.message.id), str(reaction.message.guild.id), str(reaction.message.author.id),
-                str(msg.id), )
-
-    """
     @commands.guild_only()
     @commands.Cog.listener(name="on_reaction_add")
     async def star_event(self, reaction, user):
@@ -232,7 +164,6 @@ class Star(commands.Cog):
                     e.set_footer(text=reaction.message.id)
                     msg = await chnl.send(f'{emote} {reaction.count} {reaction.message.channel.mention}', embed=e)
                     self.original_message.update({f"{reaction.message.id}": msg})
-    """
 
 
 def setup(bot):

@@ -30,33 +30,21 @@ class Levels(commands.Cog):
         user = await self.bot.conn.users.find_one({"user_id": author_id})
         if not user:
             document = {
-                "user_id": "357918459058978816",
+                "user_id": author_id,
                 "economy": {
                     "balance": {"pocket": 0, "bank": 500},
                     "bank": {"xp": 0, "lvl": 2}
                 },
-                "lvl": {},
+                "waifu": {
+                    "price": 100,
+                    "owned_by": None
+                },
                 "misc": {
                     "donator": False,
                     "tester": False
                 }
             }
             await self.bot.conn.users.insert_one(document)
-            user = await self.bot.conn.users.find_one({"user_id": author_id})
-
-        if not user['lvl'][guild_id]:
-            self.bot.conn.users.update_one(
-                {"user_id": author_id}, {"$push": {"lvl": {guild_id: {"lvl": 0, "xp": 1}}}})
-
-        user = await self.bot.conn.users.find_one({"user_id": author_id})
-
-        await self.bot.conn.users.update_one({"user_id": author_id},
-                                             {'$set': {'lvl': {guild_id: {"xp": user['lvl'][guild_id]['xp'] + 1}}}})
-
-        if await self.lvl_up(user, guild_id):
-            channel = discord.utils.get(message.guild.channels, name="Levels")
-            if channel:
-                await channel.send(f"{message.author.display_name} is now level {user['lvl'][guild_id]['lvl'] + 1}")
 
     @commands.command(aliases=['lvl'])
     async def level(self, ctx, member: discord.Member = None):

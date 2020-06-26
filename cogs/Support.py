@@ -79,7 +79,7 @@ class Support(commands.Cog):
         await self.bot.pg_con.execute('UPDATE guild_settings SET support_role = $1 WHERE guild_id = $2',
                                       str(role.id), str(ctx.guild.id))
         await ctx.send(f"Updated help role to {role.name}")
-
+    """
     @commands.Cog.listener(name='on_message')
     async def dm_listener(self, message):
         if message.guild is None:
@@ -97,7 +97,7 @@ class Support(commands.Cog):
             if db:
                 user = await self.bot.fetch_user(int(db[0][0]))
                 await user.send(f"**Helper:** {message.content}")
-
+    """
 
 def setup(bot):
     bot.add_cog(Support(bot))

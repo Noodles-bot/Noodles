@@ -20,7 +20,7 @@ async def q(subreddit):
 
 
 class Reddit(commands.Cog):
-    # TODO: Switch reddit to mongodb
+
     def __init__(self, bot):
         self.bot = bot
         self.reddit = praw.Reddit(client_id=client_id,
@@ -178,11 +178,11 @@ class Reddit(commands.Cog):
         await ctx.author.send(f"Succesfully send verification to {m.content}")
         r = await self.bot.wait_for('message', check=lambda msg: msg.author == ctx.author)
         if r.content.lower() == verify.lower():
-            i = await self.bot.pg_con.fetch("SELECT * FROM reddit WHERE user_id = $1", str(ctx.author.id))
-            print(i)
+            i = await self.bot.conn.users.fetch_one({"reddit": str(username)})
             if not i:
-                await self.bot.pg_con.execute("INSERT INTO reddit (user_id, username) VALUES ($1, $2)",
-                                              str(ctx.author.id), ig)
+                user = await self.bot.conn.users.fetch_one({"user_id": str(ctx.author.id)})
+                user['misc']['reddit'] = str(username)
+                await self.bot.conn.users.update_one({"user_id": str(ctx.author.id)}, {"$set": user}, upsert=False)
                 await ctx.author.send("Succesfully verified")
             else:
                 await ctx.author.send("You are already verified")

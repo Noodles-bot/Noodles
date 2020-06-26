@@ -167,12 +167,10 @@ class Owner(commands.Cog):
         except Exception as err:
             await ctx.send(err)
 
-    # TODO: Switch set_money to mongodb
     @commands.command(aliases=['setmoney'])
     @checks.is_owner_or_admin()
-    async def set_money(self, ctx, *, name):
-        await self.bot.pg_con.execute("UPDATE guild_settings SET money_name = $1 WHERE guild_id = $2", name,
-                                      str(ctx.guild.id))
+    async def set_money(self, ctx, *, name: str):
+        await self.bot.conn.guilds.update_one({"guild_id": str(ctx.guild.id)}, {"$set": {"settings.money": str(name)}})
         await ctx.send(f"New money name is `{name}`")
 
     @commands.Cog.listener()
