@@ -18,11 +18,16 @@ class Exurb(commands.Cog):
                                   username=username,
                                   password=password,
                                   user_agent=user_agent)
+        self.channel_refresh.start()
 
-    @commands.Cog.listener()
-    async def on_member_join(self, member):
+    @tasks.loop(minutes=30.0)
+    async def channel_refresh(self):
         members = self.bot.get_channel(690125363170508906)
-        await members.edit(name=f"Sub members: {self.reddit.subreddit('exurb1a').subscribers}")
+        await members.edit(name=f"Subreddit members: {self.reddit.subreddit('exurb1a').subscribers}")
+
+    @channel_refresh.before_loop
+    async def before_channel_refresh(self):
+        await self.bot.wait_until_ready()
 
     @commands.command(hidden=True)
     @commands.is_owner()
