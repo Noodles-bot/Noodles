@@ -117,7 +117,8 @@ class Misc(commands.Cog):
 
         await ctx.message.delete()
         await ctx.send(embed=embed)
-
+    
+    """
     @commands.command(aliases=['fav', 'fetch'])
     async def fetchav(self, ctx, user_id: int):
         """Fetches an avatar for any user id"""
@@ -126,7 +127,8 @@ class Misc(commands.Cog):
                               color=ctx.author.color)
         embed.set_image(url=user.avatar_url)
         await ctx.send(embed=embed)
-
+    """
+    
     @commands.command(aliases=['src'])
     @commands.is_owner()
     async def source(self, ctx, *, command):
