@@ -116,18 +116,7 @@ class Misc(commands.Cog):
             embed.set_author(name=f'{member}', icon_url=ctx.author.avatar_url)
 
         await ctx.message.delete()
-        await ctx.send(embed=embed)
-    
-    """
-    @commands.command(aliases=['fav', 'fetch'])
-    async def fetchav(self, ctx, user_id: int):
-        """Fetches an avatar for any user id"""
-        user = await self.bot.fetch_user(user_id)
-        embed = discord.Embed(title='', description=f'**Showing the secksy avatar of: {user.name}**',
-                              color=ctx.author.color)
-        embed.set_image(url=user.avatar_url)
-        await ctx.send(embed=embed)
-    """
+        await ctx.send(embed=embed)  
     
     @commands.command(aliases=['src'])
     @commands.is_owner()
