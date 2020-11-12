@@ -4,13 +4,14 @@ from discord.ext import commands
 from utils import checks
 from utils.fun.data import color
 
-
 class Star(commands.Cog):
+
     def __init__(self, bot):
         self.bot = bot
         self.message_list = []
         self.original_message = {}
 
+    """
     async def get_amt(self, guild_id):
         i = await self.bot.pg_con.fetch("SELECT star_amount, guild_id FROM guild_settings WHERE guild_id = $1",
                                         guild_id)
@@ -188,7 +189,7 @@ class Star(commands.Cog):
                 str(reaction.message.id), str(reaction.message.guild.id), str(reaction.message.author.id),
                 str(msg.id), )
 
-    """
+
     @commands.guild_only()
     @commands.Cog.listener(name="on_reaction_add")
     async def star_event(self, reaction, user):

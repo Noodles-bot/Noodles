@@ -1,4 +1,0 @@
-C:\Users\Matthew\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\201.7223.86\bin\cmake\win\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" C:\Users\Matthew\Documents\Scripts\Python\Discord\Noodles\utils\cpp
--- Configuring done
--- Generating done
--- Build files have been written to: C:/Users/Matthew/Documents/Scripts/Python/Discord/Noodles/utils/cpp/cmake-build-debug

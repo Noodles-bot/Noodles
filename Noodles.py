@@ -9,7 +9,7 @@ from discord.ext import commands
 
 from utils.secret import *
 
-__version__ = '0.4.11 Alpha'
+# __version__ = '0.4.11 Alpha'
 
 text = r"""
  _   _                 _ _          
@@ -53,7 +53,8 @@ async def get_prefix(bot, message):
     return commands.when_mentioned_or(prefix)(bot, message)
 
 
-bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True)
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents)
 
 # bot.remove_command('help')
 
@@ -66,7 +67,6 @@ async def on_ready():
     print(f'Bot-Name: {bot.user}')
     print(f'Bot-ID: {bot.user.id}')
     print(f'Discord.py Version: {discord.__version__}')
-    print(f'Bot Version: {__version__}')
     bot.AppInfo = await bot.application_info()
     print(f'Owner: {bot.AppInfo.owner}')
     print(f'Latency: {round(bot.latency * 1000, 3)}ms')

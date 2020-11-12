@@ -13,7 +13,7 @@ def coinflip():
     return random.randint(0, 1)
 
 
-def randomnumber(num1: int, num2: int):
+def random_number(num1: int, num2: int):
     return random.randrange(num1, num2)
 
 
@@ -407,8 +407,8 @@ class Economy(commands.Cog):
                 amt = await sql.get_balance(author_id=str(ctx.author.id))
                 money = amt[0][0]
             if user1['bal'] >= int(money) > 0:
-                num1 = randomnumber(1, 12)  # user
-                num2 = randomnumber(1, 12)  # bot
+                num1 = random_number(1, 12)  # user
+                num2 = random_number(1, 12)  # bot
 
                 money = int(money)
                 await sql.withdraw(amount=money, author_id=str(ctx.author.id))
