@@ -27,7 +27,7 @@ def percentage(total, x):
 class Misc(commands.Cog):
 
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: commands.Bot = bot
         self.trans = googletrans.Translator()
         self.thumb = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/COVID-19_Outbreak_World_Map.svg/langen-1000px-COVID-19_Outbreak_World_Map.svg.png?t="
 
@@ -298,7 +298,7 @@ class Misc(commands.Cog):
             guild = f"{ctx.guild.id} / {ctx.guild.name}"
         msg = embedinator(ctx.author, color, suggestion, formatUser=True)
         msg.set_footer(text=f'User: {ctx.author.id} | Guild: {guild}')
-        owner = self.bot.get_user(357918459058978816)
+        owner = (await self.bot.application_info()).owner
         await owner.send(embed=msg)
         await ctx.message.add_reaction('✅')
 
@@ -382,159 +382,159 @@ class Misc(commands.Cog):
         embed.add_field(name=f'To {dest}', value=ret.text, inline=False)
         await ctx.send(embed=embed)
 
-    @commands.group(invoke_without_command=True)
-    async def covid(self, ctx, country=None):
-        """Gets info about country or info about the worlds cases"""
-        if country is None:
-            async with session.get('https://corona.lmao.ninja/v2/all') as resp:
-                data = await resp.json(content_type=None)
-            embed = discord.Embed(title='', color=color)
-            embed.set_author(name=f'Coronavirus COVID-19 stats',
-                             icon_url='https://i.imgur.com/htEqt0S.png')
-            embed.add_field(name='<:sick:702950542648803358> **Confirmed**',
-                            value=f'{data["cases"]:,}')
-            embed.add_field(name='<:recoverd:702950542120321026> **Recovered**',
-                            value=f'{data["recovered"]:,} (**{percentage(data["cases"], data["recovered"])}**)')
-            embed.add_field(name='<:death:702950444036784238> **Deaths**',
-                            value=f'{data["deaths"]:,} (**{percentage(data["cases"], data["deaths"])}**)')
-            embed.add_field(name='<:date:702950443789189151> **Today\nconfirmed**',
-                            value=f'+{data["todayCases"]:,} (**{percentage(data["cases"], data["todayCases"])}**)')
-            embed.add_field(name='<:date:702950443789189151> **Today\ndeaths**',
-                            value=f'+{data["todayDeaths"]:,} (**{percentage(data["cases"], data["todayDeaths"])}**)')
-            embed.add_field(name='<:sick:702950443885789184> **Active**',
-                            value=f'{data["active"]:,} (**{percentage(data["cases"], data["active"])}**)')
-            embed.add_field(name=':hospital: **Critical**',
-                            value=f'{data["critical"]:,} (**{percentage(data["active"], data["critical"])}**)')
-            embed.add_field(name=':syringe: **Tests**',
-                            value=f'{data["tests"]:,}')
-            date = data["updated"] / 1000
-            date = datetime.fromtimestamp(date).strftime("%#d %B %Y, %I:%M %p CET")
-            embed.set_footer(text="Last updated at: " + date)
-            embed.set_thumbnail(url=self.thumb)
-            embed.set_image(url='attachment://stats.png')
-            await ctx.send(embed=embed,
-                           file=discord.File('stats.png',
-                                             filename='stats.png'))
-        else:
-            try:
-                async with session.get(f'https://corona.lmao.ninja/v2/countries/{country}') as resp:
-                    data = await resp.json(content_type='application/json')
-                # async with session.get(f'https://corona.lmao.ninja/v2/yesterday/{country}') as resp:
-                #    y = await resp.json(content_type='text/html')
-                # todayRecovered = data['recovered'] - y['recovered']
-                embed = discord.Embed(title='', color=color)
-                embed.set_author(name=f'Coronavirus COVID-19 stats - {data["country"]}',
-                                 icon_url=data['countryInfo']['flag'])
-                embed.add_field(name='<:sick:702950542648803358> **Confirmed**',
-                                value=f'{data["cases"]:,}')
-                embed.add_field(name='<:recoverd:702950542120321026> **Recovered**',
-                                value=f'{data["recovered"]:,} (**{percentage(data["cases"], data["recovered"])}**)')
-                embed.add_field(name='<:death:702950444036784238> **Deaths**',
-                                value=f'{data["deaths"]:,} (**{percentage(data["cases"], data["deaths"])}**)')
-                embed.add_field(name='<:date:702950443789189151> **Today\nconfirmed**',
-                                value=f'+{data["todayCases"]:,} (**{percentage(data["cases"], data["todayCases"])}**)')
-                # embed.add_field(name='<:date:702950443789189151> **Today\nrecovered**',
-                #              value=f'+{todayRecovered:,} (**{percentage(data["cases"], todayRecovered)}**)')
-                embed.add_field(name='<:date:702950443789189151> **Today\ndeaths**',
-                                value=f'+{data["todayDeaths"]:,} (**{percentage(data["cases"], data["todayDeaths"])}**)')
-                embed.add_field(name='<:sick:702950443885789184> **Active**',
-                                value=f'{data["active"]:,} (**{percentage(data["cases"], data["active"])}**)')
-                embed.add_field(name=':hospital: **Critical**',
-                                value=f'{data["critical"]:,} (**{percentage(data["active"], data["critical"])}**)')
-                embed.add_field(name=':syringe: **Tests**',
-                                value=f'{data["tests"]:,}')
-                date = data["updated"] / 1000
-                date = datetime.fromtimestamp(date).strftime("%#d %B %Y, %I:%M %p CET")
-                embed.set_footer(text="Last updated at: " + date)
-                await ctx.send(embed=embed)
-            except KeyError:
-                async with session.get(f'https://corona.lmao.ninja/v2/countries/{country}') as resp:
-                    data = await resp.json(content_type=None)
-                embed = discord.Embed(title='', description=data["message"], color=color)
-                await ctx.send(embed=embed)
-
-    @covid.command()
-    async def state(self, ctx, state=None):
-        """"Gets info about state or states in the USA, affected by COVID-19"""
-        if state is None:
-            states = []
-            async with session.get('https://corona.lmao.ninja/v2/states?sort=cases') as resp:
-                data = await resp.json(content_type=None)
-            async with session.get('https://corona.lmao.ninja/v2/countries/us') as resp:
-                i = await resp.json(content_type=None)
-            for index, d in enumerate(data, 0):
-                if (index % 2) == 0:
-                    states.append(f'{data[index]["state"]}: {data[index]["cases"]} [+{data[index]["todayCases"]}]')
-                else:
-                    states.append(
-                        f'**{data[index]["state"]}: {data[index]["cases"]} [+{data[index]["todayCases"]}]**')
-                if index >= 65:
-                    break
-
-            embed = discord.Embed(title='',
-                                  description=f'<:sick:702950542648803358> Confirmed **{i["cases"]:,}** [+**{i["todayCases"]:,}**]\n'
-                                              f'<:death:702950444036784238> Deaths **{i["deaths"]:,}** [+**{i["todayDeaths"]:,}**]'
-                                              f'\n\n' + '\n'.join(states), color=color)
-            embed.set_thumbnail(url='https://i.imgur.com/VeaLsEv.png')
-            date = i["updated"] / 1000
-            date = datetime.fromtimestamp(date).strftime("%#d %B %Y, %I:%M %p CET")
-            embed.set_footer(text="Last updated at: " + date)
-            embed.set_author(name=f'All states affected by Coronavirus COVID-19',
-                             icon_url=i["countryInfo"]["flag"])
-            await ctx.send(embed=embed)
-        else:
-            try:
-                async with session.get(f'https://corona.lmao.ninja/v2/states/{state}') as resp:
-                    data = await resp.json(content_type=None)
-                embed = discord.Embed(title='', color=color)
-                embed.set_author(name=f'Coronavirus COVID-19 stats - {data["state"]}')
-                embed.add_field(name='<:sick:702950542648803358> **Confirmed**',
-                                value=f'{data["cases"]:,}')
-                embed.add_field(name='<:death:702950444036784238> **Deaths**',
-                                value=f'{data["deaths"]:,} (**{percentage(data["cases"], data["deaths"])}**)')
-                embed.add_field(name='<:date:702950443789189151> **Today\nconfirmed**',
-                                value=f'+{data["todayCases"]:,} (**{percentage(data["cases"], data["todayCases"])}**)')
-                embed.add_field(name='<:date:702950443789189151> **Today\ndeaths**',
-                                value=f'+{data["todayDeaths"]:,} (**{percentage(data["cases"], data["todayDeaths"])}**)')
-                embed.add_field(name='<:sick:702950443885789184> **Active**',
-                                value=f'{data["active"]:,} (**{percentage(data["cases"], data["active"])}**)')
-                embed.add_field(name=':syringe: **Tests**',
-                                value=f'{data["tests"]:,}')
-                await ctx.send(embed=embed)
-            except KeyError:
-                async with session.get(f'https://corona.lmao.ninja/v2/states/{state}') as resp:
-                    data = await resp.json(content_type=None)
-                embed = discord.Embed(title='', description=data["message"], color=color)
-                await ctx.send(embed=embed)
-
-    @covid.command()
-    async def countries(self, ctx):
-        """Gets top 65 countries affected by the COVID-19 virus"""
-        countries = []
-        async with session.get('https://corona.lmao.ninja/v2/countries?sort=cases') as resp:
-            data = await resp.json(content_type=None)
-        async with session.get('https://corona.lmao.ninja/v2/all') as resp:
-            i = await resp.json(content_type=None)
-
-        for index, d in enumerate(data, 0):
-            if (index % 2) == 0:
-                countries.append(f'{data[index]["country"]}: {data[index]["cases"]} [+{data[index]["todayCases"]}]')
-            else:
-                countries.append(f'**{data[index]["country"]}: {data[index]["cases"]} [+{data[index]["todayCases"]}]**')
-            if index >= 65:
-                break
-
-        embed = discord.Embed(title='',
-                              description=f'<:sick:702950542648803358> Confirmed **{i["cases"]:,}** [+**{i["todayCases"]:,}**]\n'
-                                          f'<:death:702950444036784238> Deaths **{i["deaths"]:,}** [+**{i["todayDeaths"]:,}**]'
-                                          f'\n\n' + '\n'.join(countries), color=color)
-        embed.set_thumbnail(url=self.thumb)
-        date = i["updated"] / 1000
-        date = datetime.fromtimestamp(date).strftime("%#d %B %Y, %I:%M %p CET")
-        embed.set_footer(text="Last updated at: " + date)
-        embed.set_author(name=f'All countries affected by Coronavirus COVID-19',
-                         icon_url='https://i.imgur.com/htEqt0S.png')
-        await ctx.send(embed=embed)
+    # @commands.group(invoke_without_command=True)
+    # async def covid(self, ctx, country=None):
+    #     """Gets info about country or info about the worlds cases"""
+    #     if country is None:
+    #         async with session.get('https://corona.lmao.ninja/v2/all') as resp:
+    #             data = await resp.json(content_type=None)
+    #         embed = discord.Embed(title='', color=color)
+    #         embed.set_author(name=f'Coronavirus COVID-19 stats',
+    #                          icon_url='https://i.imgur.com/htEqt0S.png')
+    #         embed.add_field(name='<:sick:702950542648803358> **Confirmed**',
+    #                         value=f'{data["cases"]:,}')
+    #         embed.add_field(name='<:recoverd:702950542120321026> **Recovered**',
+    #                         value=f'{data["recovered"]:,} (**{percentage(data["cases"], data["recovered"])}**)')
+    #         embed.add_field(name='<:death:702950444036784238> **Deaths**',
+    #                         value=f'{data["deaths"]:,} (**{percentage(data["cases"], data["deaths"])}**)')
+    #         embed.add_field(name='<:date:702950443789189151> **Today\nconfirmed**',
+    #                         value=f'+{data["todayCases"]:,} (**{percentage(data["cases"], data["todayCases"])}**)')
+    #         embed.add_field(name='<:date:702950443789189151> **Today\ndeaths**',
+    #                         value=f'+{data["todayDeaths"]:,} (**{percentage(data["cases"], data["todayDeaths"])}**)')
+    #         embed.add_field(name='<:sick:702950443885789184> **Active**',
+    #                         value=f'{data["active"]:,} (**{percentage(data["cases"], data["active"])}**)')
+    #         embed.add_field(name=':hospital: **Critical**',
+    #                         value=f'{data["critical"]:,} (**{percentage(data["active"], data["critical"])}**)')
+    #         embed.add_field(name=':syringe: **Tests**',
+    #                         value=f'{data["tests"]:,}')
+    #         date = data["updated"] / 1000
+    #         date = datetime.fromtimestamp(date).strftime("%#d %B %Y, %I:%M %p CET")
+    #         embed.set_footer(text="Last updated at: " + date)
+    #         embed.set_thumbnail(url=self.thumb)
+    #         embed.set_image(url='attachment://stats.png')
+    #         await ctx.send(embed=embed,
+    #                        file=discord.File('stats.png',
+    #                                          filename='stats.png'))
+    #     else:
+    #         try:
+    #             async with session.get(f'https://corona.lmao.ninja/v2/countries/{country}') as resp:
+    #                 data = await resp.json(content_type='application/json')
+    #             # async with session.get(f'https://corona.lmao.ninja/v2/yesterday/{country}') as resp:
+    #             #    y = await resp.json(content_type='text/html')
+    #             # todayRecovered = data['recovered'] - y['recovered']
+    #             embed = discord.Embed(title='', color=color)
+    #             embed.set_author(name=f'Coronavirus COVID-19 stats - {data["country"]}',
+    #                              icon_url=data['countryInfo']['flag'])
+    #             embed.add_field(name='<:sick:702950542648803358> **Confirmed**',
+    #                             value=f'{data["cases"]:,}')
+    #             embed.add_field(name='<:recoverd:702950542120321026> **Recovered**',
+    #                             value=f'{data["recovered"]:,} (**{percentage(data["cases"], data["recovered"])}**)')
+    #             embed.add_field(name='<:death:702950444036784238> **Deaths**',
+    #                             value=f'{data["deaths"]:,} (**{percentage(data["cases"], data["deaths"])}**)')
+    #             embed.add_field(name='<:date:702950443789189151> **Today\nconfirmed**',
+    #                             value=f'+{data["todayCases"]:,} (**{percentage(data["cases"], data["todayCases"])}**)')
+    #             # embed.add_field(name='<:date:702950443789189151> **Today\nrecovered**',
+    #             #              value=f'+{todayRecovered:,} (**{percentage(data["cases"], todayRecovered)}**)')
+    #             embed.add_field(name='<:date:702950443789189151> **Today\ndeaths**',
+    #                             value=f'+{data["todayDeaths"]:,} (**{percentage(data["cases"], data["todayDeaths"])}**)')
+    #             embed.add_field(name='<:sick:702950443885789184> **Active**',
+    #                             value=f'{data["active"]:,} (**{percentage(data["cases"], data["active"])}**)')
+    #             embed.add_field(name=':hospital: **Critical**',
+    #                             value=f'{data["critical"]:,} (**{percentage(data["active"], data["critical"])}**)')
+    #             embed.add_field(name=':syringe: **Tests**',
+    #                             value=f'{data["tests"]:,}')
+    #             date = data["updated"] / 1000
+    #             date = datetime.fromtimestamp(date).strftime("%#d %B %Y, %I:%M %p CET")
+    #             embed.set_footer(text="Last updated at: " + date)
+    #             await ctx.send(embed=embed)
+    #         except KeyError:
+    #             async with session.get(f'https://corona.lmao.ninja/v2/countries/{country}') as resp:
+    #                 data = await resp.json(content_type=None)
+    #             embed = discord.Embed(title='', description=data["message"], color=color)
+    #             await ctx.send(embed=embed)
+    #
+    # @covid.command()
+    # async def state(self, ctx, state=None):
+    #     """"Gets info about state or states in the USA, affected by COVID-19"""
+    #     if state is None:
+    #         states = []
+    #         async with session.get('https://corona.lmao.ninja/v2/states?sort=cases') as resp:
+    #             data = await resp.json(content_type=None)
+    #         async with session.get('https://corona.lmao.ninja/v2/countries/us') as resp:
+    #             i = await resp.json(content_type=None)
+    #         for index, d in enumerate(data, 0):
+    #             if (index % 2) == 0:
+    #                 states.append(f'{data[index]["state"]}: {data[index]["cases"]} [+{data[index]["todayCases"]}]')
+    #             else:
+    #                 states.append(
+    #                     f'**{data[index]["state"]}: {data[index]["cases"]} [+{data[index]["todayCases"]}]**')
+    #             if index >= 65:
+    #                 break
+    #
+    #         embed = discord.Embed(title='',
+    #                               description=f'<:sick:702950542648803358> Confirmed **{i["cases"]:,}** [+**{i["todayCases"]:,}**]\n'
+    #                                           f'<:death:702950444036784238> Deaths **{i["deaths"]:,}** [+**{i["todayDeaths"]:,}**]'
+    #                                           f'\n\n' + '\n'.join(states), color=color)
+    #         embed.set_thumbnail(url='https://i.imgur.com/VeaLsEv.png')
+    #         date = i["updated"] / 1000
+    #         date = datetime.fromtimestamp(date).strftime("%#d %B %Y, %I:%M %p CET")
+    #         embed.set_footer(text="Last updated at: " + date)
+    #         embed.set_author(name=f'All states affected by Coronavirus COVID-19',
+    #                          icon_url=i["countryInfo"]["flag"])
+    #         await ctx.send(embed=embed)
+    #     else:
+    #         try:
+    #             async with session.get(f'https://corona.lmao.ninja/v2/states/{state}') as resp:
+    #                 data = await resp.json(content_type=None)
+    #             embed = discord.Embed(title='', color=color)
+    #             embed.set_author(name=f'Coronavirus COVID-19 stats - {data["state"]}')
+    #             embed.add_field(name='<:sick:702950542648803358> **Confirmed**',
+    #                             value=f'{data["cases"]:,}')
+    #             embed.add_field(name='<:death:702950444036784238> **Deaths**',
+    #                             value=f'{data["deaths"]:,} (**{percentage(data["cases"], data["deaths"])}**)')
+    #             embed.add_field(name='<:date:702950443789189151> **Today\nconfirmed**',
+    #                             value=f'+{data["todayCases"]:,} (**{percentage(data["cases"], data["todayCases"])}**)')
+    #             embed.add_field(name='<:date:702950443789189151> **Today\ndeaths**',
+    #                             value=f'+{data["todayDeaths"]:,} (**{percentage(data["cases"], data["todayDeaths"])}**)')
+    #             embed.add_field(name='<:sick:702950443885789184> **Active**',
+    #                             value=f'{data["active"]:,} (**{percentage(data["cases"], data["active"])}**)')
+    #             embed.add_field(name=':syringe: **Tests**',
+    #                             value=f'{data["tests"]:,}')
+    #             await ctx.send(embed=embed)
+    #         except KeyError:
+    #             async with session.get(f'https://corona.lmao.ninja/v2/states/{state}') as resp:
+    #                 data = await resp.json(content_type=None)
+    #             embed = discord.Embed(title='', description=data["message"], color=color)
+    #             await ctx.send(embed=embed)
+    #
+    # @covid.command()
+    # async def countries(self, ctx):
+    #     """Gets top 65 countries affected by the COVID-19 virus"""
+    #     countries = []
+    #     async with session.get('https://corona.lmao.ninja/v2/countries?sort=cases') as resp:
+    #         data = await resp.json(content_type=None)
+    #     async with session.get('https://corona.lmao.ninja/v2/all') as resp:
+    #         i = await resp.json(content_type=None)
+    #
+    #     for index, d in enumerate(data, 0):
+    #         if (index % 2) == 0:
+    #             countries.append(f'{data[index]["country"]}: {data[index]["cases"]} [+{data[index]["todayCases"]}]')
+    #         else:
+    #             countries.append(f'**{data[index]["country"]}: {data[index]["cases"]} [+{data[index]["todayCases"]}]**')
+    #         if index >= 65:
+    #             break
+    #
+    #     embed = discord.Embed(title='',
+    #                           description=f'<:sick:702950542648803358> Confirmed **{i["cases"]:,}** [+**{i["todayCases"]:,}**]\n'
+    #                                       f'<:death:702950444036784238> Deaths **{i["deaths"]:,}** [+**{i["todayDeaths"]:,}**]'
+    #                                       f'\n\n' + '\n'.join(countries), color=color)
+    #     embed.set_thumbnail(url=self.thumb)
+    #     date = i["updated"] / 1000
+    #     date = datetime.fromtimestamp(date).strftime("%#d %B %Y, %I:%M %p CET")
+    #     embed.set_footer(text="Last updated at: " + date)
+    #     embed.set_author(name=f'All countries affected by Coronavirus COVID-19',
+    #                      icon_url='https://i.imgur.com/htEqt0S.png')
+    #     await ctx.send(embed=embed)
 
     @commands.command()
     @commands.is_owner()
