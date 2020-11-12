@@ -116,8 +116,8 @@ class Misc(commands.Cog):
             embed.set_author(name=f'{member}', icon_url=ctx.author.avatar_url)
 
         await ctx.message.delete()
-        await ctx.send(embed=embed)  
-    
+        await ctx.send(embed=embed)
+
     @commands.command(aliases=['src'])
     @commands.is_owner()
     async def source(self, ctx, *, command):
@@ -245,13 +245,10 @@ class Misc(commands.Cog):
         """Gets info about bot"""
         total = 0
         python_files = []
-        cpp_files = []
         for path, subdirs, files in os.walk('.'):
             for name in files:
                 if name.endswith('.py'):
                     python_files.append(name)
-                if name.endswith('.cpp'):
-                    cpp_files.append(name)
                 try:
                     with codecs.open('./' + str(pathlib.PurePath(path, name)),
                                      'r', 'utf-8') as f:
@@ -283,10 +280,9 @@ class Misc(commands.Cog):
             value=f"**Total Commands and Subcommands: **{len(set(self.bot.walk_commands()))}\n"
                   + f"**Total Cogs: **{len(self.bot.cogs)}\n" +
                   f"**Lines of Code: **{total:,}\n" + '**Memory Usage: **' + str(
-                psutil.virtual_memory()[2]) + '%\n' +
+                    psutil.virtual_memory()[2]) + '%\n' +
                   f'**Cached Messages: **{len(self.bot.cached_messages)}\n' +
-                  f'**Number of Python files: **{len(python_files)}\n'
-                  f'**Number of C++ files: **{len(cpp_files)}\n')
+                  f'**Number of Python files: **{len(python_files)}')
         embed.set_footer(text='Python ' + platform.python_version() + ' | C++20 | C18')
         embed.add_field(name='For more help',
                         value='[Join the discord server](https://discordapp.com/invite/Kzcr6pE)',
@@ -304,7 +300,7 @@ class Misc(commands.Cog):
         msg.set_footer(text=f'User: {ctx.author.id} | Guild: {guild}')
         owner = self.bot.get_user(357918459058978816)
         await owner.send(embed=msg)
-        await ctx.message.add_reaction('<:check:694305541417336872>')
+        await ctx.message.add_reaction('✅')
 
     @commands.group(invoke_without_command=True)
     async def say(self, ctx, *, msg):
