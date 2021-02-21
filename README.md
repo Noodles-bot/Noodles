@@ -18,7 +18,7 @@
                  style="float: left; margin-right: 10px;" />
             </a>
 		<a href="https://codebeat.co/projects/github-com-noodles-bot-noodles-master"><img alt="codebeat badge" src="https://codebeat.co/badges/23230a4b-ad74-4f5f-a850-7e43b960c15e" /></a>
-                <p>Discord bot made by DankDumpster#4806 (357918459058978816)</p>
+                <p>Discord bot made by <a href="https://discord.com/users/357918459058978816">DankDumpster#4806</a></p>
                 <code>git clone https://github.com/DankDumpster/Noodles</code>
             <h2>Requirements</h2>
                 <ul>
