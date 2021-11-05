@@ -2,6 +2,7 @@
    <body style="background-color:floralwhite;">
         <div>
             <h1>Noodles Bot</h1>
+		<p>As of 2021 I archived this project, it was a fun first project for me and I love to look back at it in the future, I've moved on to making more fun projects because of this. Thanks everyone!</p>
             <a href="https://discord.gg/Kzcr6pE">
                 <img src="https://discordapp.com/api/guilds/705526724783505518/embed.png"
                  alt="Markdown Monster icon"
